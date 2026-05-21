@@ -90,3 +90,71 @@
 
 </body>
 </html>''
+
+    <!-- DASHBOARD DO ALUNO -->
+    <div id="dashboard-aluno" class="dashboard" style="display:none;">
+
+        <aside class="sidebar" id="sidebar-aluno">
+            <div class="sidebar-top">
+                <div style="display:flex; align-items:center; gap:10px; padding: 8px 4px;">
+                    <div style="width:34px; height:34px; border-radius:50%; background:rgb(0, 0, 0); display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0;">📚</div>
+                    <span class="sidebar-text" id="sidebar-nome-aluno" style="font-family:'Sora',sans-serif; font-size:0.88rem; font-weight:600; color:white; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"></span>
+                </div>
+            </div>
+            <div class="sidebar-section-label sidebar-text">Conversas</div>
+            <div class="history-list" id="history-list-aluno"></div>
+            <div style="padding: 12px 0 0; flex-shrink:0;">
+                <a href="aprender.html" style="display:flex; align-items:center; gap:10px; padding:11px 12px; background:#CC9699; border:1px solid #CC9699; border-radius:10px; text-decoration:none; transition:all 0.2s; overflow:hidden;"
+                   onmouseover="this.style.background='rgba(0, 0, 0, 0.7)'; this.style.borderColor='#CC9699';"
+                   onmouseout="this.style.background='rgba(0, 0, 0, 0.7)'; this.style.borderColor='#CC9699';">
+                    <span style="font-size:1rem; flex-shrink:0;">🎓</span>
+                    <span class="sidebar-text" style="font-family:'Sora',sans-serif; font-size:0.82rem; font-weight:600; color:#cd9699; white-space:nowrap;">Aprender</span>
+                </a>
+            </div>
+            <div style="margin-top:12px; padding-top:12px; border-top:1px solid rgb(255, 255, 255);">
+                <a href="index.html" style="display:flex; align-items:center; gap:10px; padding:10px 12px; color:rgb(255, 255, 255); text-decoration:none; font-size:0.85rem; border-radius:8px; transition:all 0.2s;"
+                   onmouseover="this.style.background='rgba(255,255,255,0.05)'; this.style.color='rgba(255,255,255,0.6)';"
+                   onmouseout="this.style.background='transparent'; this.style.color='rgba(255,255,255,0.3)';">
+                    <span>↩</span>
+                    <span class="sidebar-text">Sair</span>
+                </a>
+            </div>
+        </aside>
+
+        <main class="chat-area">
+            <header class="chat-header">
+                <div class="chat-header-info">
+                    <strong id="chat-aluno-name">Tutor NexaPlus</strong>
+                    <span id="aluno-neuro-tag" class="aluno-tag" style="display:none;"></span>
+                </div>
+            </header>
+
+            <div class="chat-messages" id="chat-window-aluno">
+                <div class="empty-state">
+                    <div class="empty-icon"></div>
+                    <p>Oi! Estou aqui para te ajudar a aprender.<br>O que você quer saber hoje?</p>
+                </div>
+            </div>
+
+            <div class="chat-input-container">
+                <div class="input-wrapper">
+                    <input type="text" id="user-input-aluno"
+                        placeholder="Pergunte qualquer coisa sobre os seus estudos..."
+                        onkeypress="if(event.key==='Enter') sendMessageAluno()">
+                    <div class="input-actions">
+                        <button class="btn-voice" id="btn-voice-aluno" title="Pesquisar por voz" onclick="toggleVoiceAluno()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2H3v2a9 9 0 0 0 8 8.94V23h2v-2.06A9 9 0 0 0 21 12v-2h-2z"/></svg>
+                        </button>
+                        <button class="btn-send" onclick="sendMessageAluno()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <p class="input-hint">Pressione Enter para enviar · Clique no microfone para usar voz</p>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="aluno.js"></script>
+</body>
+</html>

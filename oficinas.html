@@ -1,0 +1,403 @@
+
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Oficinas Inclusivas – Nexaplus</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --verde: #696969 100%;
+      --verde-escuro: #000000;
+      --roxo: #000000;
+      --branco: #2f00ff;
+      --cinza-bg: #8a8888;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {  background: radial-gradient(circle at center, rgb(7, 7, 7) 0%, #696969 100% ); }
+ 
+
+    /* HEADER */
+    header {
+      background:rgb(150, 150, 150);
+      border-bottom:3px solid ff0000;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0 20px; height:45px;
+      position:sticky; top:0; z-index:100;
+   
+    }
+    .logo { font-family:'Baloo 2',cursive; font-size:1.5rem; font-weight:800; color:#ffffff; text-decoration:none; display:flex; align-items:center; gap:8px; }
+    .logo span { color:var(--amarelo); }
+    .back-btn { display:flex; align-items:center; gap:8px; color:#ffffff; font-weight:700; text-decoration:none; font-size:0.95rem; border:2px solid #000000; padding:8px 18px; border-radius:50px; transition:all 0.2s; }
+    .back-btn:hover { background:#000000; color:rgb(255, 255, 255); }
+
+    /* PAGE HERO */
+    .page-hero {
+      background: linear-gradient(135deg, #f3de9b 0%, #bbabd7 100%);
+      padding:10px 10px 5px;
+      text-align:center;
+      border-bottom:solid rgb(0, 0, 0);
+    }
+    .page-hero .icon { font-size:64px; margin-bottom:16px; display:block; animation:bounce 2s ease-in-out infinite; }
+    @keyframes bounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }
+    .page-hero h1 { font-family:'Baloo 2',cursive; font-size:2.4rem; font-weight:800; color:#ffffff; margin-bottom:12px; }
+    .page-hero h3 { font-size:1.05rem; color:#ffffff; max-width:600px; margin:0 auto; line-height:1.7; }
+
+    /* FILTROS */
+    .filtros {
+      display:flex; gap:12px; flex-wrap:wrap; justify-content:center;
+      padding:30px 40px 10px;
+    }
+    .filtro {
+      padding:9px 22px; border-radius:50px; border:2px solid #000000;
+      background:rgb(255, 255, 255); color:#000000; font-weight:700; font-size:0.9rem;
+      cursor:pointer; transition:all 0.2s;
+    }
+    .filtro.active, .filtro:hover { background:#000000; color:rgb(255, 255, 255); }
+
+    /* GRID DE CARDS */
+    .container { max-width:1100px; margin:0 auto; padding:30px 40px 80px; }
+
+    .section-title {
+      font-family:'Baloo 2',cursive; font-size:1.5rem; font-weight:800;
+      color:#ffffff; margin:40px 0 20px; display:flex; align-items:center; gap:10px;
+    }
+    .section-title::after {
+      content:''; flex:1; height:3px; background:linear-gradient(90deg, rgb(255, 255, 255), transparent);
+      border-radius:2px;
+    }
+
+    .cards-grid {
+      display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr));
+      gap:22px;
+    }
+
+    .card {
+      background:rgb(0, 0, 0); border-radius:20px; overflow:hidden;
+     
+      border:2px solid transparent; transition:all 0.3s;
+      display:flex; flex-direction:column;
+    }
+    .card:hover { transform:translateY(-6px); border-color:#ffffff; box-shadow:0 12px 36px rgb(0, 0, 0); }
+
+    .card-top {
+      height:140px; display:flex; align-items:center; justify-content:center;
+      font-size:56px;
+    }
+    .card-body { padding:22px; flex:1; display:flex; flex-direction:column; gap:10px; }
+    .card-tag {
+      display:inline-block; padding:4px 14px; border-radius:50px;
+      font-size:0.78rem; font-weight:800; background:rgb(255, 255, 255); color:#000000;
+    }
+    .card h3 { font-family:'Baloo 2',cursive; font-size:1.2rem; color:#ffffff; }
+    .card p { font-size:0.9rem; color:#ffffff; line-height:1.6; flex:1; }
+    .card-footer {
+      padding:0 22px 18px;
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .card-meta { font-size:0.8rem; color:#ffffff; display:flex; gap:14px; }
+    .btn-ver {
+      background:rgb(0, 0, 0); color:rgb(255, 255, 255); border:none; border-radius:50px;
+      padding:8px 18px; font-family:'Nunito',sans-serif; font-weight:700;
+      font-size:0.85rem; cursor:pointer; transition:all 0.2s;
+    }
+    .btn-ver:hover { background:rgb(150, 150, 150); transform:scale(1.05); }
+
+    /* NOVO BADGE */
+    .badge-novo {
+      background:rgb(255, 0, 0); color:#000000; font-size:0.72rem; font-weight:800;
+      padding:3px 10px; border-radius:50px; margin-left:8px;
+    }
+
+    /* DESTAQUE DO DIA */
+    .destaque-dia {
+      background: linear-gradient(135deg, #f3de9b 0%, #bbabd7 100%);
+      color:white; border-radius:24px; padding:36px;
+      display:flex; align-items:center; gap:30px;
+      margin-bottom:40px;
+      box-shadow:0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    .hero-logo-main {
+      display: block;
+      width: 100%;
+      max-width: 400px; /* Proporção destacada */
+      height: auto;
+      margin: 0 auto 30px;
+      /* Filtro suave para a logo brilhar no fundo escuro */
+      filter: drop-shadow(0 0 25px rgba(255, 255, 255, 0.1));
+      animation: floatAnim 6s ease-in-out infinite;
+    }
+    .destaque-dia h2 { font-family:'Baloo 2',cursive; font-size:1.7rem; margin-bottom:8px; }
+    .destaque-dia p { opacity:0.9; line-height:1.6; margin-bottom:16px; }
+    .btn-destaque {
+      background:rgb(255, 0, 0); color:#ff0000 100%; border:none; border-radius:50px;
+      padding:12px 28px; font-weight:800; font-size:0.95rem; cursor:pointer;
+      transition:all 0.2s;
+    }
+    .btn-destaque:hover { transform:scale(1.05); box-shadow:0 4px 16px rgba(0,0,0,0.2); }
+    @media(max-width:600px){
+      .destaque-dia { flex-direction:column; text-align:center; }
+      .cards-grid { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo">🧩 Nexaplus</a>
+  <a href="index.html" class="back-btn">← Início</a>
+  
+</header>
+
+<div class="page-hero">
+  <h1>Oficinas Inclusivas</h1>
+  <h3>Atividades acessíveis com recursos visuais, auditivos, sensoriais e lúdicos. Novo conteúdo adicionado diariamente para todos os perfis de aprendizagem.</h3>
+</div>
+
+<div class="filtros">
+  <button class="filtro active" onclick="filtrar(this,'todos')">Todos</button>
+  <button class="filtro" onclick="filtrar(this,'sensorial')">Sensorial</button>
+  <button class="filtro" onclick="filtrar(this,'visual')">Visual</button>
+  <button class="filtro" onclick="filtrar(this,'comunicacao')">Comunicação</button>
+  <button class="filtro" onclick="filtrar(this,'jogo')">Jogos</button>
+  <button class="filtro" onclick="filtrar(this,'motor')"> Motoras</button>
+</div>
+
+<div class="container">
+  <!-- DESTAQUE DO DIA -->
+ <section class="hero">
+        <div class="overlay"></div>
+        <div class="hero-content">         
+            <img src="infinity.png" alt="Nexaplus Infinito" class="hero-logo-main">
+   <div class="brand">
+  
+    </div>
+    <div>
+      <h2></h2>
+      <p></p>
+     
+    </div>
+  </div>
+
+  <div class="section-title"> Comunicação Alternativa e Aumentativa</div>
+  <div class="cards-grid">
+    <div class="card" data-cat="comunicacao">
+      <div class="card-top" style="background:#f3DF9A">🗣️</div>
+      <div class="card-body">
+        <span class="card-tag">Comunicação</span>
+        <h3>Prancha de Comunicação com Pictogramas</h3>
+        <p>Crie pranchas personalizadas com imagens e símbolos para facilitar a comunicação de alunos não verbais ou com dificuldades de fala.</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-meta"><span>📅 Hoje</span><span>⏱ 30min</span></div>
+        <a href="prancha-comunicacao.html" class="btn-ver" style="text-decoration:none; text-align:center;">Ver atividade</a>
+      </div>
+    </div>
+
+    <div class="card" data-cat="comunicacao">
+      <div class="card-top" style="background:#f3DF9a">📸</div>
+      <div class="card-body">
+        <span class="card-tag">Comunicação</span>
+        <h3>Fotojornal da Turma Inclusiva </h3>
+        <p>Alunos fotografam momentos do cotidiano escolar e montam um jornal com legenda em texto, áudio e pictograma. Desenvolve expressão e autoria.</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-meta"><span>📅 Hoje</span><span>⏱ 45min</span></div>
+        
+        <a href="fotojornal.html" class="btn-ver" style="text-decoration:none; text-align:center;">Ver atividade</a>
+      </div>
+    </div>
+
+    <div class="card" data-cat="comunicacao">
+      <div class="card-top" style="background:#f3DF9A">🎤</div>
+      <div class="card-body">
+        <span class="card-tag">Comunicação · Áudio</span>
+        <h3>Podcast da Inclusão</h3>
+        <p>Alunos gravam áudios curtos contando uma história, um desejo ou um aprendizado. Ferramenta acessível para quem prefere se expressar oralmente.</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-meta"><span>📅 Ontem</span><span>⏱ 20min</span></div>
+        <a href="podcastinclusao.html" class="btn-ver" style="text-decoration:none; text-align:center;">Ver atividade</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Atividades Sensoriais</div>
+  <div class="cards-grid">
+    <div class="card" data-cat="sensorial">
+      <div class="card-top" style="background:#bbabd7">🤲</div>
+      <div class="card-body">
+        <span class="card-tag">Sensorial · Tátil</span>
+        <h3>Caixa das Texturas</h3>
+        <p>Explore diferentes materiais (areia, algodão, lixa, veludo) para estimular o tato e trabalhar regulação sensorial. Excelente para TEA e outras neurodivergências.</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-meta"><span>📅 Hoje</span><span>⏱ 25min</span></div>
+        <button class="btn-ver">Ver atividade</button>
+      </div>
+    </div>
+
+    <div class="card" data-cat="sensorial">
+      <div class="card-top" style="background:#bbabd7">🎵</div>
+      <div class="card-body">
+        <span class="card-tag">Sensorial · Auditivo</span>
+        <h3>Instrumentos de Sopro e Percussão </h3>
+        <p>Crie instrumentos simples com materiais recicláveis. Explore ritmos e sons para desenvolver coordenação, atenção e expressão musical de forma inclusiva.</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-meta"><span>📅 Hoje</span><span>⏱ 40min</span></div>
+        <button class="btn-ver">Ver atividade</button>
+      </div>
+    </div>
+
+    <div class="card" data-cat="sensorial">
+      <div class="card-top" style="background:#bbabd7">🧁</div>
+      <div class="card-body">
+        <span class="card-tag">Sensorial · Olfato</span>
+        <h3>Jardim dos Aromas</h3>
+        <p>Identificação de plantas aromáticas, essências e especiarias. Estimula o olfato e cria memórias afetivas ligadas ao aprendizado.</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-meta"><span>📅 Ontem</span><span>⏱ 30min</span></div>
+        <button class="btn-ver">Ver atividade</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title"> Atividades Visuais</div>
+  <div class="cards-grid">
+    <div class="card" data-cat="visual">
+      <div class="card-top" style="background:#b6dcc7">🎨</div>
+      <div class="card-body">
+        <span class="card-tag">Visual · Arte</span>
+        <h3>Pintura com Técnicas Adaptadas</h3>
+        <p>Pintura com esponjas, rolos e pincéis de diferentes espessuras. Técnicas acessíveis para alunos com mobilidade reduzida ou dificuldades motoras finas.</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-meta"><span>📅 Hoje</span><span>⏱ 35min</span></div>
+        <button class="btn-ver">Ver atividade</button>
+      </div>
+    </div>
+
+    <div class="card" data-cat="visual">
+      <div class="card-top" style="background:#b6dcc7">🔠</div>
+      <div class="card-body">
+        <span class="card-tag">Visual · Leitura</span>
+        <h3>Leitura em Braille – Introdução</h3>
+        <p>Atividade introdutória ao sistema Braille com materiais táteis. Promove empatia e inclusão, permitindo que toda a turma experiencie a leitura tátil.</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-meta"><span>📅 Hoje</span><span>⏱ 50min</span></div>
+        <button class="btn-ver">Ver atividade</button>
+      </div>
+    </div>
+
+    <div class="card" data-cat="visual">
+      <div class="card-top" style="background:#b6dcc7">📖</div>
+      <div class="card-body">
+        <span class="card-tag">Visual · Leitura</span>
+        <h3>Livros Acessíveis com Libras</h3>
+        <p>Leitura de histórias com tradução simultânea em Libras. Inclui QR codes para vídeos com intérpretes e versão em áudio para cada página.</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-meta"><span>📅 Ontem</span><span>⏱ 40min</span></div>
+        <button class="btn-ver">Ver atividade</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title"> Jogos Adaptados</div>
+  <div class="cards-grid">
+    <div class="card" data-cat="jogo">
+      <div class="card-top" style="background:#CC9699">🧩</div>
+      <div class="card-body">
+        <span class="card-tag">Jogo · Cognitivo</span>
+        <h3>Quebra-Cabeça Colaborativo Gigante</h3>
+        <p>Peças grandes e coloridas para montar em grupo. Estimula colaboração, raciocínio espacial e inclui versão adaptada para cadeirantes.</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-meta"><span>📅 Hoje</span><span>⏱ 30min</span></div>
+        <button class="btn-ver">Ver atividade</button>
+      </div>
+    </div>
+
+    <div class="card" data-cat="jogo">
+      <div class="card-top" style="background:#CC9699">🎯</div>
+      <div class="card-body">
+        <span class="card-tag">Jogo · Motor</span>
+        <h3>Boliche Adaptado – Educação Física Inclusiva </h3>
+        <p>Boliche com rampas e bolas de tamanhos variados. Adaptado para alunos em cadeira de rodas, com bengala ou com limitações motoras.</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-meta"><span>📅 Hoje</span><span>⏱ 45min</span></div>
+        <button class="btn-ver">Ver atividade</button>
+      </div>
+    </div>
+
+    <div class="card" data-cat="jogo">
+      <div class="card-top" style="background:#CC9699">🃏</div>
+      <div class="card-body">
+        <span class="card-tag">Jogo · Memória</span>
+        <h3>Memória das Emoções com Pictogramas</h3>
+        <p>Jogo da memória com cartas de emoções representadas por pictogramas, fotos e palavras. Promove vocabulário emocional e empatia.</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-meta"><span>📅 Ontem</span><span>⏱ 20min</span></div>
+        <button class="btn-ver">Ver atividade</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title"> Desenvolvimento Motor</div>
+  <div class="cards-grid">
+    <div class="card" data-cat="motor">
+      <div class="card-top" style="background:#cfcfce">🤸</div>
+      <div class="card-body">
+        <span class="card-tag">Motor · Psicomotricidade</span>
+        <h3>Circuito Psicomotor Inclusivo</h3>
+        <p>Percurso com estações de equilíbrio, coordenação e lateralidade adaptadas para diferentes níveis de mobilidade. Inclui versão para cadeirantes.</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-meta"><span>📅 Hoje</span><span>⏱ 50min</span></div>
+        <button class="btn-ver">Ver atividade</button>
+      </div>
+    </div>
+
+    <div class="card" data-cat="motor">
+      <div class="card-top" style="background:#cfcfce">✍️</div>
+      <div class="card-body">
+        <span class="card-tag">Motor · Escrita</span>
+        <h3>Escrita Funcional com Apoio de Tecnologia 
+        <p>Uso de engrossadores de lápis, tablets e softwares de escrita assistida. Estratégias práticas para alunos com dificuldades motoras finas na escrita.</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-meta"><span>📅 Hoje</span><span>⏱ 40min</span></div>
+        <button class="btn-ver">Ver atividade</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer style="text-align:center;padding:28px;font-size:0.85rem;color:#000000;border-top:2px solid #000000;background:linear-gradient(135deg, #f3de9b 0%, #bbabd7 100%);">
+  © 2025 <strong style="color:var()">Nexaplus</strong> · Saiba Mais · Inclusão que transforma vidas
+</footer>
+
+<script>
+  function filtrar(btn, cat) {
+    document.querySelectorAll('.filtro').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.card[data-cat]').forEach(c => {
+      if(cat === 'todos' || c.dataset.cat === cat || c.dataset.cat.includes(cat)) {
+        c.style.display = 'flex';
+      } else {
+        c.style.display = 'none';
+      }
+    });
+  }
+</script>
+
+</body>
+</html>

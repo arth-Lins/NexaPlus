@@ -106,9 +106,62 @@ function salvarPerfilAluno() {
 
     irParaChat(nome);
 }
-// ===== CHAT =====
+// ===== IR PARA O CHAT =====
+function irParaChat(nome) {
+    document.getElementById('main-container').style.display = 'none';
+    document.getElementById('dashboard-aluno').style.display = 'flex';
+
+    const nomeEl = document.getElementById('chat-aluno-name');
+    if (nomeEl) nomeEl.innerText = `Tutor de ${nome.split(' ')[0]}`;
+
+    const sidebarNome = document.getElementById('sidebar-nome-aluno');
+    if (sidebarNome) sidebarNome.innerText = nome.split(' ')[0];
+
+    const neuroTag = document.getElementById('aluno-neuro-tag');
+    if (neuroTag && perfilAluno?.neuro) {
+        neuroTag.innerText = perfilAluno.neuro;
+        neuroTag.style.display = 'inline-block';
+    }
+
+    const chat = document.getElementById('chat-window-aluno');
+    if (!chat) return;
+    chat.innerHTML = '';
+
+    if (chatHistory.length > 0) {
+        chatHistory.forEach(m => {
+            const role = m.role === 'user' ? 'user' : 'bot';
+            appendMsg(role, m.parts[0].text);
+        });
+    } else {
+        appendMsg('bot', `Oi, ${nome.split(' ')[0]}! 👋 Sou seu tutor pessoal. Estou aqui para te ajudar a entender qualquer assunto do jeito que funciona melhor pra você.\n\nO que você quer aprender hoje?`);
+    }
+
+    atualizarSidebar();
+}
 
 //===== PROMPT DO SISTEMA =====
+function buildSystemPromptAluno() {
+    const p = perfilAluno || {};
+    return `Você é um tutor educacional gentil, paciente e criativo para o aluno ${p.nome || 'estudante'}.
+
+PERFIL DO ALUNO:
+- Nome: ${p.nome || 'não informado'}
+- Série: ${p.serie || 'não informada'}
+- Idade: ${p.idade || 'não informada'}
+- Condição/Neurodivergência: ${p.neuro || 'não informada'}
+
+DIRETRIZES:
+1. Use linguagem simples, clara e amigável
+2. Divida explicações em partes menores quando o assunto for complexo
+3. Use exemplos do dia a dia, analogias e comparações visuais
+4. Se o aluno tiver TDAH: seja direto, use listas curtas, evite textos longos
+5. Se o aluno tiver TEA: seja literal e preciso, evite metáforas confusas
+6. Se o aluno tiver dislexia: prefira bullet points e frases curtas
+7. Sempre encoraje e elogie o esforço
+8. Se o aluno errar: corrija gentilmente, sem julgamento
+9. Ofereça exercícios práticos quando adequado
+10. Termine respostas longas com um resumo curto`;
+}
 
 // ===== MENSAGEM =====
 

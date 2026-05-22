@@ -233,6 +233,19 @@ function atualizarSidebar() {
 }
 
 // ===== UTILITÁRIOS =====
+function appendMsg(role, text) {
+    const chat = document.getElementById('chat-window-aluno');
+    if (!chat) return;
+
+    const empty = chat.querySelector('.empty-state');
+    if (empty) empty.remove();
+
+    const div = document.createElement('div');
+    div.className = `msg ${role}`;
+    div.innerText = text;
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+}
 
 // ===== EXPOSIÇÃO DE FUNÇÕES =====
 

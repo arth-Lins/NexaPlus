@@ -253,4 +253,51 @@ window.fazerLoginAluno = fazerLoginAluno;
 window.salvarPerfilAluno = salvarPerfilAluno;
 window.sendMessageAluno = sendMessageAluno;
 // ===== VOZ - ALUNO =====
+let recognitionAluno = null;
+let isRecordingAluno = false;
 
+window.toggleVoiceAluno = function() {
+    const btn = document.getElementById('btn-voice-aluno');
+    const input = document.getElementById('user-input-aluno');
+
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        alert('Seu navegador não suporta reconhecimento de voz. Tente o Chrome.');
+        return;
+    }
+
+    if (isRecordingAluno) {
+        recognitionAluno?.stop();
+        return;
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognitionAluno = new SpeechRecognition();
+    recognitionAluno.lang = 'pt-BR';
+    recognitionAluno.continuous = false;
+    recognitionAluno.interimResults = true;
+
+    recognitionAluno.onstart = () => {
+        isRecordingAluno = true;
+        btn?.classList.add('recording');
+        if (input) input.placeholder = '🎙️ Ouvindo...';
+    };
+
+    recognitionAluno.onresult = (e) => {
+        const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+        if (input) input.value = transcript;
+    };
+
+    recognitionAluno.onend = () => {
+        isRecordingAluno = false;
+        btn?.classList.remove('recording');
+        if (input) input.placeholder = 'Pergunte qualquer coisa sobre os seus estudos...';
+    };
+
+    recognitionAluno.onerror = () => {
+        isRecordingAluno = false;
+        btn?.classList.remove('recording');
+        if (input) input.placeholder = 'Pergunte qualquer coisa sobre os seus estudos...';
+    };
+
+    recognitionAluno.start();
+};

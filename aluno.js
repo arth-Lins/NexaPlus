@@ -248,5 +248,9 @@ function appendMsg(role, text) {
 }
 
 // ===== EXPOSIÇÃO DE FUNÇÕES =====
-
+window.nextStep = nextStep;
+window.fazerLoginAluno = fazerLoginAluno;
+window.salvarPerfilAluno = salvarPerfilAluno;
+window.sendMessageAluno = sendMessageAluno;
 // ===== VOZ - ALUNO =====
+

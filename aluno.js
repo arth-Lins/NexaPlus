@@ -1,0 +1,121 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, signInWithRedirect, getRedirectResult, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyD1bH3bgVXww_prqfr1-TF4rbCl4Aag2C0",
+    authDomain: "eduadapt-12a2e.firebaseapp.com",
+    projectId: "eduadapt-12a2e",
+    storageBucket: "eduadapt-12a2e.firebasestorage.app",
+    messagingSenderId: "138838747156",
+    appId: "1:138838747156:web:f6dc19e1308cc3c9b19f01",
+    measurementId: "G-X7JK0TDZ6L"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+const genAI = new GoogleGenerativeAI("AIzaSyBAsPpRe8gvEfNuzzBr27w78SafBdIVbs8");
+
+// ===== ESTADO =====
+let perfilAluno = JSON.parse(localStorage.getItem('perfilAluno')) || null;
+let chatHistory = JSON.parse(localStorage.getItem('chatHistory_aluno')) || [];
+
+// ===== ROTEAMENTO INICIAL =====
+const urlParams = new URLSearchParams(window.location.search);
+const isDirect = urlParams.get('direct') === 'true';
+const isSetup = urlParams.get('setup') === 'true';
+const savedNome = localStorage.getItem('alunoNome');
+
+// Verifica redirecionamento baseado nos parâmetros e sessão salva
+if (isDirect && savedNome && perfilAluno) {
+    // Sessão ativa + perfil completo: vai direto para o chat
+    irParaChat(savedNome);
+} else if (isSetup && savedNome && !perfilAluno) {
+    // Veio do login.html após login, sem perfil: mostra formulário de perfil-
+    const el = document.getElementById('welcome-aluno-text');
+    if (el) el.innerText = `Olá, ${savedNome.split(' ')[0]}! Vamos te conhecer.`;
+    nextStep(3);
+} else if (savedNome && perfilAluno) {
+    // Sessão salva normalmente (ex: botões "Sou Aluno" do index): vai para o chat
+    irParaChat(savedNome);
+}
+// else: exibe o onboarding normal (steps 1, 2...)
+
+// ===== RESULTADO DO REDIRECT (fluxo de primeiro acesso via professor.html) =====
+getRedirectResult(auth).then((result) => {
+    const user = result?.user;
+    if (!user) return;
+
+    const nome = user.displayName || "Estudante";
+    localStorage.setItem('alunoNome', nome);
+    localStorage.setItem('userRole', 'aluno');
+
+    if (perfilAluno) {
+        irParaChat(nome);
+    } else {
+        const el = document.getElementById('welcome-aluno-text');
+        if (el) el.innerText = `Olá, ${nome.split(' ')[0]}! Vamos te conhecer.`;
+        nextStep(3);
+    }
+}).catch(console.error);
+
+// ===== ETAPAS =====
+function nextStep(num) {
+    document.querySelectorAll('.step').forEach(s => {
+        s.style.display = 'none';
+        s.classList.remove('active');
+    });
+    const target = document.getElementById('step-' + num);
+    if (!target) return;
+    target.style.display = 'flex';
+    target.classList.add('active');
+}
+
+async function fazerLoginAluno() {
+    try {
+        // Tenta popup primeiro (mais fluido); fallback para redirect se bloquear
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        const nome = user.displayName || "Estudante";
+
+        localStorage.setItem('alunoNome', nome);
+        localStorage.setItem('userRole', 'aluno');
+
+        if (perfilAluno) {
+            irParaChat(nome);
+        } else {
+            const el = document.getElementById('welcome-aluno-text');
+            if (el) el.innerText = `Olá, ${nome.split(' ')[0]}! Vamos te conhecer.`;
+            nextStep(3);
+        }
+    } catch (err) {
+        // Fallback para redirect (mobile)
+        await signInWithRedirect(auth, provider);
+    }
+}
+
+function salvarPerfilAluno() {
+    const nome = localStorage.getItem('alunoNome') || "Estudante";
+    const serie = document.getElementById('aluno-serie')?.value?.trim() || "";
+    const idade = document.getElementById('aluno-idade')?.value || "";
+    const neuro = document.getElementById('aluno-neuro')?.value?.trim() || "";
+
+    perfilAluno = { nome, serie, idade, neuro };
+    localStorage.setItem('perfilAluno', JSON.stringify(perfilAluno));
+
+    irParaChat(nome);
+}
+// ===== CHAT =====
+
+//===== PROMPT DO SISTEMA =====
+
+// ===== MENSAGEM =====
+
+// ===== SIDEBAR =====
+
+// ===== UTILITÁRIOS =====
+
+// ===== EXPOSIÇÃO DE FUNÇÕES =====
+
+// ===== VOZ - ALUNO =====

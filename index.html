@@ -206,9 +206,101 @@
 </head>
     
 <body>
-    <h1>Mais  world!</h1>
-    
-<h1> antonelAA</h1>
+    <div class="accessibility-bar">
+        <script>
+            (function(d){
+                var s = d.createElement("script");
+                s.setAttribute("data-account","YOUR_USERWAY_ACCOUNT");
+                s.setAttribute("src","https://cdn.userway.org/widget.js");
+                (d.body || d.head).appendChild(s);
+            })(document);
+        </script>
+        <div vw class="enabled">
+            <div vw-access-button class="active"></div>
+            <div vw-plugin-wrapper>
+                <div class="vw-plugin-top-wrapper"></div>
+            </div>
+        </div>
+        <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+        <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
+    </div>
 
+    <header class="navbar">
+        <div class="logo-area">
+            <a href="index.html">
+                <img src="icon.png" alt="Nexaplus Logo" class="nav-logo-img">
+            </a>
+        </div>
+      
+    </header>
+
+    <section class="hero">
+        <div class="overlay"></div>
+        <div class="hero-content">
+            <div class="badge">✦ Tecnologia & Inclusão</div>
+            
+            <img src="infinity.png" alt="Nexaplus Infinito" class="hero-logo-main">
+
+            <p class="subtitle">
+                Transformando a aprendizagem de estudantes atípicos com Inteligência Artificial adaptativa.
+            </p>
+
+            <div class="cta-buttons">
+                <a href="#" class="btn btn-professor" id="btn-professor">
+                    <span>🎓</span> Sou Professor
+                </a>
+                <a href="#" class="btn btn-aluno" id="btn-aluno">
+                    <span>📚</span> Sou Aluno
+                </a>
+            </div>
+
+            <a href="saibamais.html" target="_blank" class="btn-saibamais">
+                Conheça o Projeto
+            </a>
+
+            <p class="description">
+                Ambiente acolhedor e inteligente para alunos com TEA, TDAH e outras necessidades específicas.
+            </p>
+        </div>
+    </section>
+
+    <script>
+        // Lógica de Redirecionamento
+        document.getElementById('btn-professor').addEventListener('click', function(e) {
+            e.preventDefault();
+            const temPerfil = localStorage.getItem('professorNome');
+            if (temPerfil) {
+                window.location.href = 'professor.html?direct=true';
+            } else {
+                localStorage.setItem('perfil', 'professor');
+                window.location.href = 'professor.html';
+            }
+        });
+
+        document.getElementById('btn-aluno').addEventListener('click', function(e) {
+            e.preventDefault();
+            const temNome = localStorage.getItem('alunoNome');
+            const temPerfil = localStorage.getItem('perfilAluno');
+            if (temNome && temPerfil) {
+                window.location.href = 'aluno.html?direct=true';
+            } else {
+                localStorage.setItem('perfil', 'aluno');
+                window.location.href = 'aluno.html';
+            }
+        });
+
+        const btnNav = document.getElementById('btn-login-nav');
+        const savedRole = localStorage.getItem('userRole');
+        const savedNomeProf = localStorage.getItem('professorNome');
+        const savedNomeAluno = localStorage.getItem('alunoNome');
+
+        if (savedRole === 'professor' && savedNomeProf) {
+            btnNav.href = 'professor.html?direct=true';
+            btnNav.textContent = 'Minha Conta';
+        } else if (savedRole === 'aluno' && savedNomeAluno) {
+            btnNav.href = 'aluno.html?direct=true';
+            btnNav.textContent = 'Minha Conta';
+        }
+    </script>
 </body>
 </html>

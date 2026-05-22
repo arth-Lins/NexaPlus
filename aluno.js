@@ -210,6 +210,27 @@ async function sendMessageAluno() {
 }
 
 // ===== SIDEBAR =====
+function atualizarSidebar() {
+    const list = document.getElementById('history-list-aluno');
+    if (!list) return;
+    list.innerHTML = '';
+
+    if (chatHistory.length === 0) return;
+
+    const userMsgs = chatHistory
+        .filter(m => m.role === 'user')
+        .slice(-8)
+        .reverse();
+
+    userMsgs.forEach((m) => {
+        const texto = m.parts[0].text;
+        const resumo = texto.length > 28 ? texto.substring(0, 28) + '...' : texto;
+        const div = document.createElement('div');
+        div.className = 'history-item';
+        div.innerHTML = `<div class="history-item-dot"></div><span class="history-item-name">${resumo}</span>`;
+        list.appendChild(div);
+    });
+}
 
 // ===== UTILITÁRIOS =====
 

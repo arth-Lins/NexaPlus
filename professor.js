@@ -176,7 +176,18 @@ window.pularAluno = pularAluno;
 window.sendMessage = sendMessage;
 
 // ===== ENTER NO INPUT + INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+    const input = document.getElementById('user-input');
+    if (input) input.addEventListener('keypress', e => {
+        if (e.key === 'Enter') sendMessage();
+    });
 
+    // Garante step-1 visível se não há sessão salva
+    if (!savedNomeProf) {
+        const s1 = document.getElementById('step-1');
+        if (s1) s1.style.display = 'flex';
+    }
+});
 // ===== VOZ - PROFESSOR =====
 let recognitionProf = null;
 let isRecordingProf = false;

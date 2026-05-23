@@ -169,6 +169,11 @@ function appendMsg(role, text) {
 }
 
 // ===== EXPOSIÇÃO GLOBAL =====
+window.nextStep = nextStep;
+window.verificarPerfilAposLogin = verificarPerfilAposLogin;
+window.finalizarCadastro = finalizarCadastro;
+window.pularAluno = pularAluno;
+window.sendMessage = sendMessage;
 
 // ===== ENTER NO INPUT + INIT =====
 

@@ -109,3 +109,51 @@ async function verificarPerfilAposLogin() {
 // ===== ENTER NO INPUT + INIT =====
 
 // ===== VOZ - PROFESSOR =====
+let recognitionProf = null;
+let isRecordingProf = false;
+
+window.toggleVoiceProf = function() {
+    const btn = document.getElementById('btn-voice-prof');
+    const input = document.getElementById('user-input');
+
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        alert('Seu navegador não suporta reconhecimento de voz. Tente o Chrome.');
+        return;
+    }
+
+    if (isRecordingProf) {
+        recognitionProf?.stop();
+        return;
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognitionProf = new SpeechRecognition();
+    recognitionProf.lang = 'pt-BR';
+    recognitionProf.continuous = false;
+    recognitionProf.interimResults = true;
+
+    recognitionProf.onstart = () => {
+        isRecordingProf = true;
+        btn?.classList.add('recording');
+        if (input) input.placeholder = '🎙️ Ouvindo...';
+    };
+
+    recognitionProf.onresult = (e) => {
+        const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+        if (input) input.value = transcript;
+    };
+
+    recognitionProf.onend = () => {
+        isRecordingProf = false;
+        btn?.classList.remove('recording');
+        if (input) input.placeholder = 'Pergunte sobre estratégias pedagógicas...';
+    };
+
+    recognitionProf.onerror = () => {
+        isRecordingProf = false;
+        btn?.classList.remove('recording');
+        if (input) input.placeholder = 'Pergunte sobre estratégias pedagógicas...';
+    };
+
+    recognitionProf.start();
+};

@@ -386,3 +386,15 @@ body {
     opacity: 1;
     pointer-events: auto;
 }
+/* ===== ACCESSIBILITY WIDGETS ===== */
+.accessibility-bar {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    align-items: flex-end;
+}

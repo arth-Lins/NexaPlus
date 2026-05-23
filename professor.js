@@ -97,7 +97,45 @@ async function verificarPerfilAposLogin() {
     }
 }
 // ===== FINALIZAR CADASTRO DO ALUNO =====
+function finalizarCadastro() {
+    const nome = document.getElementById('aluno-nome')?.value.trim();
+    if (!nome) return alert("Digite o nome do aluno");
 
+    const areaInput = document.getElementById('area-ensino');
+    if (areaInput?.value) localStorage.setItem('professorArea', areaInput.value);
+
+    alunoAtivo = {
+        nome,
+        serie: document.getElementById('aluno-serie')?.value || 'Não informada',
+        neuro: document.getElementById('aluno-neuro')?.value || 'Nenhuma'
+    };
+
+    document.getElementById('main-container').style.display = 'none';
+    document.getElementById('dashboard-professor').style.display = 'flex';
+    document.getElementById('chat-with-name').innerText = `Aluno: ${nome}`;
+
+    const tag = document.getElementById('chat-aluno-tag');
+    if (tag && alunoAtivo.neuro !== 'Nenhuma') {
+        tag.innerText = alunoAtivo.neuro;
+        tag.style.display = 'inline-block';
+    }
+
+    chatHistory = [];
+    localStorage.removeItem('chatHistory_prof');
+
+    const nomeProf = localStorage.getItem('professorNome') || '';
+    appendMsg('bot', `Olá, Prof. ${nomeProf.split(' ')[0]}! Sou seu assistente pedagógico. Como posso ajudar com o plano de aula para ${nome}?`);
+}
+function pularAluno() {
+    alunoAtivo = { nome: "Aluno", serie: "", neuro: "" };
+    document.getElementById("main-container").style.display = "none";
+    document.getElementById("dashboard-professor").style.display = "flex";
+    document.getElementById("chat-with-name").innerText = "Chat Pedagógico";
+    chatHistory = [];
+    localStorage.removeItem("chatHistory_prof");
+    const nomeProf = localStorage.getItem("professorNome") || "";
+    appendMsg("bot", `Olá, Prof. ${nomeProf.split(" ")[0]}! Você pode adicionar um aluno a qualquer momento clicando em "+ Novo Aluno" na barra lateral. Como posso ajudar?`);
+}
 // ===== ENVIAR MENSAGEM =====
 
 // ===== PROMPT DO PROFESSOR =====

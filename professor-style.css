@@ -278,3 +278,111 @@ body {
     z-index: 1000;
     background: var(--black);
 }
+/* ===== SIDEBAR ===== */
+.sidebar {
+    width: 68px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 20px 12px;
+    gap: 8px;
+    transition: width 0.3s cubic-bezier(0.4,0,0.2,1);
+    overflow: hidden;
+    flex-shrink: 0;
+}
+.sidebar:hover { width: 260px; }
+
+.sidebar-top {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+.sidebar-text {
+    opacity: 0;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+    pointer-events: none;
+}
+.sidebar:hover .sidebar-text {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.btn-new-student {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--green-dim);
+    color: var(--green);
+    border: 1px solid rgb(255, 4, 4);
+    border-radius: 10px;
+    font-family: 'Sora', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.btn-new-student:hover { background: rgba(46,204,113,0.2); }
+.icon-plus {
+    font-size: 1.2rem;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.sidebar-section-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 8px 4px 4px;
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.history-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.history-item:hover { background: var(--surface2); }
+
+.history-item-dot {
+    width: 8px; height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.history-item-name {
+    font-size: 0.88rem;
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+}
+.sidebar:hover .history-item-name {
+    opacity: 1;
+    pointer-events: auto;
+}

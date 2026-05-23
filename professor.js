@@ -137,7 +137,49 @@ function pularAluno() {
     appendMsg("bot", `Olá, Prof. ${nomeProf.split(" ")[0]}! Você pode adicionar um aluno a qualquer momento clicando em "+ Novo Aluno" na barra lateral. Como posso ajudar?`);
 }
 // ===== ENVIAR MENSAGEM =====
+async function sendMessage() {
+    const input = document.getElementById('user-input');
+    const chat = document.getElementById('chat-window');
+    const msg = input?.value?.trim();
+    if (!msg || !chat) return;
 
+    input.value = '';
+    appendMsg('user', msg);
+
+    const typingId = 'typing_' + Date.now();
+    chat.innerHTML += `<div id="${typingId}" class="typing-indicator"><span></span><span></span><span></span></div>`;
+    chat.scrollTop = chat.scrollHeight;
+
+    try {
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+        const systemPrompt = buildSystemPromptProfessor();
+
+        const messages = [
+            { role: "user", parts: [{ text: systemPrompt + "\n\nResponda a próxima mensagem como assistente pedagógico." }] },
+            { role: "model", parts: [{ text: "Entendido! Estou pronto para ajudar. Pode perguntar!" }] },
+            ...chatHistory,
+            { role: "user", parts: [{ text: msg }] }
+        ];
+
+        const chatSession = model.startChat({ history: messages.slice(0, -1) });
+        const result = await chatSession.sendMessage(msg);
+        const resposta = result.response.text();
+
+        chatHistory.push({ role: "user", parts: [{ text: msg }] });
+        chatHistory.push({ role: "model", parts: [{ text: resposta }] });
+
+        if (chatHistory.length > 40) chatHistory = chatHistory.slice(-40);
+        localStorage.setItem('chatHistory_prof', JSON.stringify(chatHistory));
+
+        document.getElementById(typingId)?.remove();
+        appendMsg('bot', resposta);
+
+    } catch (e) {
+        document.getElementById(typingId)?.remove();
+        appendMsg('bot', '⚠️ Erro de conexão. Tente novamente em instantes.');
+        console.error(e);
+    }
+}
 // ===== PROMPT DO PROFESSOR =====
 function buildSystemPromptProfessor() {
     const area = localStorage.getItem('professorArea') || 'geral';

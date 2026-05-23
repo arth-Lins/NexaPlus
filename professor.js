@@ -158,6 +158,15 @@ DIRETRIZES:
 }
 
 // ===== UTILITÁRIOS =====
+function appendMsg(role, text) {
+    const chat = document.getElementById('chat-window');
+    if (!chat) return;
+    const div = document.createElement('div');
+    div.className = `msg ${role}`;
+    div.innerText = text;
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+}
 
 // ===== EXPOSIÇÃO GLOBAL =====
 

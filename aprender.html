@@ -1,51 +1,387 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Na Minha Forma de Aprender – Nexaplus</title>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet"/>
-  <style>
-    :root {
-      --roxo: #ffffff;
-    }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family:'Nunito',sans-serif; background: radial-gradient(circle at center, rgb(7, 7, 7) 0%, #696969 100% ); }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Na Minha Forma de Aprender — NexaPlus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
-    header {
-      background:rgb(150, 150, 150); border-bottom:3px solid rgb(0, 0, 0);
-      display:flex; align-items:center; justify-content:space-between;
-      padding:0 40px; height:68px;
-      position:sticky; top:0; z-index:100;
-    }
-    .logo { font-family:'Baloo 2',cursive; font-size:1.5rem; font-weight:800; color:rgb(255, 255, 255); text-decoration:none; display:flex; align-items:center; gap:8px; }
-    .logo span { color:rgb(255, 255, 255); }
-    .back-btn { display:flex; align-items:center; gap:8px; color:rgb(0, 0, 0); font-weight:700; text-decoration:none; font-size:0.95rem; border:2px solid rgb(0, 0, 0); padding:8px 18px; border-radius:50px; transition:all 0.2s; }
-    .back-btn:hover { background:rgb(0, 0, 0); color:white; }
+        :root {
+            --bg:       #0d0d10;
+            --surface:  #141418;
+            --surface2: #1c1c22;
+            --border:   rgba(255,255,255,0.07);
+            --border2:  rgba(255,255,255,0.12);
+            --cream:    #f3df9a;
+            --mint:     #b6dcc7;
+            --rose:     #cd9699;
+            --lavender: #bbabd7;
+            --white:    #ffffff;
+            --text:     #e2e0ea;
+            --muted:    rgba(255,255,255,0.45);
+            --subtle:   rgba(255,255,255,0.22);
+        }
 
-    .page-hero {
-      background: linear-gradient(135deg, #f3de9b 0%, #bbabd7 100%);
-      padding:60px 40px 50px; text-align:center;
-    }
-    .page-hero .icon { font-size:64px; margin-bottom:16px; display:block; animation:pulse 2s ease-in-out infinite; }
-    @keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.08);} }
-    .page-hero h1 { font-family:'Baloo 2',cursive; font-size:2.4rem; font-weight:800; color:rgb(255, 0, 0) 0%; margin-bottom:12px; }
-    .page-hero p { font-size:1.05rem; color:#000000; max-width:600px; margin:0 auto; line-height:1.7; }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+        }
 
-    .container { max-width:1100px; margin:0 auto; padding:40px; }
+        /* ===== NAVBAR ===== */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 32px;
+            background: rgba(13,13,16,0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            height: 80px;
+        }
 
-    /* PERFIS DE APRENDIZAGEM */
-   
-    /* ESTRATÉGIAS */
+        .nav-logo-img {
+            height: 52px;
+            width: auto;
+            display: block;
+            transition: transform 0.3s ease, filter 0.3s;
+        }
+        .nav-logo-img:hover { transform: scale(1.06); filter: drop-shadow(0 0 16px rgba(183,221,200,0.35)); }
 
-    /* RECURSOS PARA AEE */
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-link {
+            color: var(--muted);
+            font-size: 0.88rem;
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 10px;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        .nav-link:hover { color: var(--white); background: rgba(255,255,255,0.06); }
+        .nav-link.active { color: var(--mint); background: rgba(183,221,200,0.08); border: 1px solid rgba(183,221,200,0.15); }
 
-    /* PERFIS DE APRENDIZAGEM */
+        /* ===== HERO INTERNA ===== */
+        .page-hero {
+            background: linear-gradient(160deg, rgba(183,221,200,0.07) 0%, rgba(187,171,215,0.05) 100%);
+            padding: 140px 40px 60px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+        .page-hero .icon { font-size: 56px; margin-bottom: 18px; display: block; animation: sway 3s ease-in-out infinite; }
+        @keyframes sway { 0%,100%{transform:rotate(-4deg);} 50%{transform:rotate(4deg);} }
+        
+        .page-hero h1 {
+            font-family: 'Baloo 2', cursive;
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--white);
+            margin-bottom: 14px;
+            letter-spacing: -0.02em;
+        }
+        .page-hero p {
+            font-size: 1rem;
+            color: var(--muted);
+            max-width: 650px;
+            margin: 0 auto;
+            line-height: 1.72;
+        }
 
-    /* ESTRATÉGIAS */
+        /* ===== CONTAINER PRINCIPAL ===== */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px 40px 88px;
+        }
 
-    /* DEPOIMENTOS DE ALUNOS */
-  
-    /* RECURSOS PARA AEE */
- </style>
+        /* ===== SECTIONS HEADERS ===== */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 54px 0 28px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        .section-header .s-icon { font-size: 32px; }
+        .section-header h2 {
+            font-family: 'Baloo 2', cursive;
+            font-size: 1.5rem;
+            color: var(--white);
+            letter-spacing: -0.01em;
+        }
+
+        /* ===== PERFIS DE APRENDIZAGEM (GRID) ===== */
+        .perfis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 18px;
+            margin-bottom: 40px;
+        }
+        .perfil {
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 28px 24px;
+            border: 1px solid var(--border);
+            border-top: 3px solid var(--mint);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .perfil:hover, .perfil.ativo {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 36px rgba(0,0,0,0.4);
+            border-color: var(--border2);
+        }
+        .perfil-icon { font-size: 38px; margin-bottom: 14px; }
+        .perfil h3 { font-family: 'Baloo 2', cursive; font-size: 1.05rem; color: var(--white); margin-bottom: 8px; }
+        .perfil p { font-size: 0.88rem; color: var(--muted); line-height: 1.65; margin-bottom: 14px; }
+        
+        .perfil-tag {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            background: rgba(183,221,200,0.1);
+            color: var(--mint);
+            border: 1px solid rgba(183,221,200,0.2);
+        }
+
+        /* ===== ESTRATÉGIAS ===== */
+        .estrategia {
+            background: var(--surface);
+            border-radius: 18px;
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--lavender);
+            padding: 32px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+        .estrategia:hover {
+            background: var(--surface2);
+            transform: translateX(4px);
+            border-color: var(--border2);
+        }
+        .estrategia-header { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; }
+        .estrategia-header .e-icon { font-size: 32px; flex-shrink: 0; }
+        .estrategia-header h3 { font-family: 'Baloo 2', cursive; font-size: 1.2rem; color: var(--white); }
+        
+        .estrategia p { font-size: 0.94rem; color: var(--text); line-height: 1.7; opacity: 0.9; }
+        
+        .estrategia-dica {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-top: 18px;
+            font-size: 0.88rem;
+            color: var(--cream);
+            border-left: 2px solid var(--cream);
+            line-height: 1.6;
+        }
+        .estrategia-dica::before { content: '💡 Dica para professores AEE: '; font-weight: 800; color: var(--cream); }
+
+        /* ===== RECURSOS PARA AEE ===== */
+        .aee-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+        }
+        .aee-card {
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 32px 24px;
+            border: 1px solid var(--border);
+            border-top: 3px solid var(--rose);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s;
+        }
+        .aee-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 36px rgba(0,0,0,0.4);
+            border-color: var(--border2);
+        }
+        .aee-card .a-icon { font-size: 38px; margin-bottom: 14px; }
+        .aee-card h3 { font-family: 'Baloo 2', cursive; font-size: 1.1rem; color: var(--white); margin-bottom: 8px; }
+        .aee-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.65; margin-bottom: 20px; flex-grow: 1; }
+        
+        .btn-aee {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-family: 'Sora', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            background: var(--rose);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(205,150,153,0.15);
+            transition: all 0.3s;
+        }
+        .btn-aee:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(205,150,153,0.3);
+            background: #d9a5a8;
+        }
+
+        /* ===== FOOTER ===== */
+        .site-footer {
+            text-align: center; padding: 28px 20px;
+            font-size: 0.85rem; color: var(--subtle);
+            border-top: 1px solid var(--border);
+            background: var(--surface);
+        }
+        .site-footer strong { color: var(--mint); }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .navbar { height: 70px; }
+            .sm-container { padding: 36px 20px 60px; }
+            .estrategia { padding: 22px; }
+        }
+        @media (max-width: 600px) {
+            .perfis-grid, .aee-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+ <div vw class="enabled" style="position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:9999;">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
+
+    <script>(function(_d,_s){var _js,_id='userway-tebi',_b=_d.getElementsByTagName(_s)[0];if(_d.getElementById(_id))return;G_JS=_d.createElement(_s);G_JS.id=_id;G_JS.async=true;G_JS.src='https://cdn.userway.org/widget.js?account=FREE-ACCOUNT-ID';_b.parentNode.insertBefore(G_JS,_b);})(document,'script');</script>
+    
+    <header class="navbar">
+        <a href="index.html">
+            <img src="icon.png" alt="NexaPlus" class="nav-logo-img" onerror="this.style.opacity='.4'">
+        </a>
+        <nav class="nav-links">
+            <a href="index.html#saiba-mais" class="nav-link">Sobre</a>
+            <a href="aprender.html" class="nav-link active">Aprender</a>
+            <a href="oficinas.html" class="nav-link">Oficinas</a>
+        </nav>
+    </header>
+
+    <section class="page-hero">
+        <span class="icon">🧠</span>
+        <h1>Na Minha Forma de Aprender</h1>
+        <p>Cada pessoa tem um jeito único de assimilar o mundo. Aqui, alunos compartilham suas experiências, professores encontram estratégias de AEE e todos descobrem caminhos acessíveis para o conhecimento.</p>
+    </section>
+
+    <main class="container">
+
+        <div class="section-header">
+            <div class="s-icon">🧩</div>
+            <div>
+                <h2>Perfis de Aprendizagem</h2>
+            </div>
+        </div>
+
+        <div class="perfis-grid">
+            <div class="perfil" onclick="this.classList.toggle('ativo')">
+                <div class="perfil-icon">👁️</div>
+                <h3>Aprendiz Visual</h3>
+                <p>Aprende melhor com imagens, gráficos, mapas mentais e cores explicativas.</p>
+                <span class="perfil-tag">Visual</span>
+            </div>
+            <div class="perfil" onclick="this.classList.toggle('ativo')" style="border-top-color: var(--lavender)">
+                <div class="perfil-icon">👂</div>
+                <h3>Aprendiz Auditivo</h3>
+                <p>Absorve melhor ouvindo explicações, audiobooks, músicas e podcasts.</p>
+                <span class="perfil-tag" style="color: var(--lavender); background: rgba(187,171,215,0.1); border-color: rgba(187,171,215,0.2)">Auditivo</span>
+            </div>
+            <div class="perfil" onclick="this.classList.toggle('ativo')" style="border-top-color: var(--rose)">
+                <div class="perfil-icon">🤲</div>
+                <h3>Aprendiz Cinestésico</h3>
+                <p>Aprende executando na prática, tocando, experimentando e movimentando-se.</p>
+                <span class="perfil-tag" style="color: var(--rose); background: rgba(205,150,153,0.1); border-color: rgba(205,150,153,0.2)">Cinestésico</span>
+            </div>
+            <div class="perfil" onclick="this.classList.toggle('ativo')" style="border-top-color: var(--cream)">
+                <div class="perfil-icon">📖</div>
+                <h3>Aprendiz Leitura</h3>
+                <p>Aprende melhor lendo textos profundos, tomando notas e organizando listas.</p>
+                <span class="perfil-tag" style="color: var(--cream); background: rgba(243,223,154,0.1); border-color: rgba(243,223,154,0.2)">Textual</span>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <div class="s-icon">⚡</div>
+            <div>
+                <h2>Estratégias Práticas</h2>
+            </div>
+        </div>
+
+        <div class="estrategia" style="border-left-color: var(--mint)">
+            <div class="estrategia-header">
+                <div class="e-icon">🗺️</div>
+                <h3>Mapa Mental com Imagens e Cores</h3>
+            </div>
+            <p>O mapa mental é uma ferramenta visual poderosa para organizar ideias de forma não-linear. Ao usar cores diferentes para cada ramo e imagens para ilustrar conceitos, alunos visuais e com TEA conseguem compreender e memorizar informações com muito mais facilidade. Ferramentas como Canva, MindMeister e até papel e canetas coloridas funcionam muito bem.</p>
+            <div class="estrategia-dica">Ofereça modelos prontos para alunos que precisam de estrutura inicial. Permita que o mapa seja feito em papel ou digitalmente conforme a preferência do aluno.</div>
+        </div>
+
+        <div class="estrategia" style="border-left-color: var(--lavender)">
+            <div class="estrategia-header">
+                <div class="e-icon">⏱️</div>
+                <h3>Técnica Pomodoro Adaptada</h3>
+            </div>
+            <p>A técnica Pomodoro (25 minutos de foco + 5 de pausa) adaptada para alunos com TDAH, dislexia ou dificuldades de concentração. Versões adaptadas incluem ciclos menores (10-15 min) com pausas ativas. Use temporizadores visuais para tornar o tempo concreto e compreensível.</p>
+            <div class="estrategia-dica">Adapte o tempo conforme o aluno. Alguns precisam de ciclos de 5 minutos. Use relógios de areia ou apps com feedback visual (ex: Time Timer).</div>
+        </div>
+
+        <div class="estrategia" style="border-left-color: var(--rose)">
+            <div class="estrategia-header">
+                <div class="e-icon">🎵</div>
+                <h3>Aprendizagem com Música e Ritmo</h3>
+            </div>
+            <p>Transformar conteúdos acadêmicos em músicas, rimas e canções é uma estratégia poderosa para alunos com perfil auditivo e para aqueles com dislexia. A memória musical ativa diferentes regiões cerebrais e facilita a retenção de informações como tabuada, regras gramaticais e fatos históricos.</p>
+            <div class="estrategia-dica">Permita que o aluno crie suas próprias músicas para memorizar conteúdos. Isso aumenta o protagonismo e a compreensão profunda do material.</div>
+        </div>
+
+        <div class="estrategia" style="border-left-color: var(--cream)">
+            <div class="estrategia-header">
+                <div class="e-icon">📅</div>
+                <h3>Rotina Visual com Passo a Passo em Imagens</h3>
+            </div>
+            <p>Para alunos com TEA ou Deficiência Intelectual, ter uma rotina visual clara com imagens de cada passo do dia escolar reduz a ansiedade e aumenta a autonomia. Quadros PECS, agendas visuais e painéis de rotina são ferramentas fundamentais no trabalho do professor AEE.</p>
+            <div class="estrategia-dica">Crie a rotina junto com o aluno usando fotos reais do ambiente escolar. Isso torna o recurso mais significativo e aumenta a adesão.</div>
+        </div>
+
+        <div class="estrategia" style="border-left-color: var(--mint)">
+            <div class="estrategia-header">
+                <div class="e-icon">🎮</div>
+                <h3>Gamificação do Aprendizado</h3>
+            </div>
+            <p>Transformar tarefas escolares em desafios com pontos, badges e recompensas aumenta significativamente o engajamento de alunos com TDAH e dificuldades de motivação. Ferramentas como ClassDojo, Kahoot adaptado e sistemas de pontos físicos são ótimas opções inclusivas.</p>
+            <div class="estrategia-dica">Certifique-se de que todos os alunos possam atingir as recompensas com metas individualizadas. A gamificação deve incluir, nunca excluir.</div>
+        </div>
+
+    </main>
+
+    <footer class="site-footer">
+        © 2026 <strong>NexaPlus</strong> · Na Minha Forma de Aprender · Inclusão que transforma vidas
+    </footer>
+
+</body>
 </html>

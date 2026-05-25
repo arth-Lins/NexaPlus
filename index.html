@@ -41,68 +41,60 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 2px 10px;
-            background: var(--nav-purple);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid 
-    rgba(255,255,255,0.1);
-            min-height: 110px; /* Altura para acomodar a logo grande */
+            padding: 0 32px;
+            background: rgba(13,13,16,0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            height: 80px;
         }
-        .logo-area {
+
+        .nav-logo-img {
+            height: 52px;
+            width: auto;
+            display: block;
+            transition: transform 0.3s ease, filter 0.3s;
+    
+        }
+        .nav-logo-img:hover { transform: scale(1.06); filter: drop-shadow(0 0 16px rgba(183,221,200,0.35)); }
+
+        .nav-links {
             display: flex;
             align-items: center;
+            gap: 8px;
         }
-         .nav-logo-img {
-            height: 100px; /* Aumentado para destaque */
-             width: auto;
-            display: block;
-            /* mix-blend-mode: multiply; /* Remove o fundo branco da imagem */
-            transition: transform 0.3s ease;
-        }
-        .nav-logo-img:hover {
-            transform: scale(1.05);
-        }
-        .btn-login {
-            padding: 12px 28px;
-            background: var(--black);
-            color: var(--white);
-            border-radius: 50px;
-            font-size: 0.95rem;
-            font-weight: 600;
+        .nav-link {
+            color: var(--muted);
+            font-size: 0.88rem;
             text-decoration: none;
-            transition: all 0.25s ease;
+            padding: 8px 18px;
+            border-radius: 10px;
+            transition: all 0.2s;
+            font-weight: 500;
         }
-        .btn-login:hover {
-            background: var(--white);
-            color: var(--black);
-        }
+        .nav-link:hover { color: var(--white); background: rgba(255,255,255,0.06); }
+
          /* ===== HERO SECTION ===== */
         .hero {
             min-height: 100vh;
-            /* Se você tiver a imagem de fundo, altere o caminho abaixo */
-            background: #ffffff; 
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 140px 40px 80px;
+            padding: 100px 40px 80px;
+            overflow: hidden;
         }
-        .overlay {
+
+        .hero-bg {
             position: absolute;
             inset: 0;
-            background: radial-gradient(circle at center, rgb(7, 7, 7) 0%, #696969 100% );
+            background:
+                radial-gradient(ellipse at 50% 0%, rgba(183,221,200,0.12) 0%, transparent 55%),
+                radial-gradient(ellipse at 80% 60%, rgba(187,171,215,0.08) 0%, transparent 45%),
+                radial-gradient(ellipse at 20% 70%, rgba(205,150,153,0.07) 0%, transparent 40%),
+                var(--bg);
         }
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            max-width: 800px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 25px;
-            animation: heroFadeIn 0.9s ease both;
-        }
+        
           /* Logo Central (Infinito) */
         .hero-logo-main {
             display: block;

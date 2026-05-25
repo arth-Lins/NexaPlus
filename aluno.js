@@ -106,16 +106,198 @@ function salvarPerfilAluno() {
 
     irParaChat(nome);
 }
-// ===== CHAT =====
+// ===== IR PARA O CHAT =====
+function irParaChat(nome) {
+    document.getElementById('main-container').style.display = 'none';
+    document.getElementById('dashboard-aluno').style.display = 'flex';
+
+    const nomeEl = document.getElementById('chat-aluno-name');
+    if (nomeEl) nomeEl.innerText = `Tutor de ${nome.split(' ')[0]}`;
+
+    const sidebarNome = document.getElementById('sidebar-nome-aluno');
+    if (sidebarNome) sidebarNome.innerText = nome.split(' ')[0];
+
+    const neuroTag = document.getElementById('aluno-neuro-tag');
+    if (neuroTag && perfilAluno?.neuro) {
+        neuroTag.innerText = perfilAluno.neuro;
+        neuroTag.style.display = 'inline-block';
+    }
+
+    const chat = document.getElementById('chat-window-aluno');
+    if (!chat) return;
+    chat.innerHTML = '';
+
+    if (chatHistory.length > 0) {
+        chatHistory.forEach(m => {
+            const role = m.role === 'user' ? 'user' : 'bot';
+            appendMsg(role, m.parts[0].text);
+        });
+    } else {
+        appendMsg('bot', `Oi, ${nome.split(' ')[0]}! 👋 Sou seu tutor pessoal. Estou aqui para te ajudar a entender qualquer assunto do jeito que funciona melhor pra você.\n\nO que você quer aprender hoje?`);
+    }
+
+    atualizarSidebar();
+}
 
 //===== PROMPT DO SISTEMA =====
+function buildSystemPromptAluno() {
+    const p = perfilAluno || {};
+    return `Você é um tutor educacional gentil, paciente e criativo para o aluno ${p.nome || 'estudante'}.
+
+PERFIL DO ALUNO:
+- Nome: ${p.nome || 'não informado'}
+- Série: ${p.serie || 'não informada'}
+- Idade: ${p.idade || 'não informada'}
+- Condição/Neurodivergência: ${p.neuro || 'não informada'}
+
+DIRETRIZES:
+1. Use linguagem simples, clara e amigável
+2. Divida explicações em partes menores quando o assunto for complexo
+3. Use exemplos do dia a dia, analogias e comparações visuais
+4. Se o aluno tiver TDAH: seja direto, use listas curtas, evite textos longos
+5. Se o aluno tiver TEA: seja literal e preciso, evite metáforas confusas
+6. Se o aluno tiver dislexia: prefira bullet points e frases curtas
+7. Sempre encoraje e elogie o esforço
+8. Se o aluno errar: corrija gentilmente, sem julgamento
+9. Ofereça exercícios práticos quando adequado
+10. Termine respostas longas com um resumo curto`;
+}
 
 // ===== MENSAGEM =====
+async function sendMessageAluno() {
+    const input = document.getElementById('user-input-aluno');
+    const chat = document.getElementById('chat-window-aluno');
+    const msg = input?.value?.trim();
+    if (!msg || !chat) return;
+
+    input.value = '';
+    appendMsg('user', msg);
+
+    const typingId = 'typing_' + Date.now();
+    chat.innerHTML += `<div id="${typingId}" class="typing-indicator"><span></span><span></span><span></span></div>`;
+    chat.scrollTop = chat.scrollHeight;
+
+    try {
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+        const systemPrompt = buildSystemPromptAluno();
+
+        const messages = [
+            { role: "user", parts: [{ text: systemPrompt + "\n\nResponda a próxima mensagem como tutor." }] },
+            { role: "model", parts: [{ text: "Entendido! Estou pronto para ser seu tutor. Pode perguntar!" }] },
+            ...chatHistory,
+            { role: "user", parts: [{ text: msg }] }
+        ];
+
+        const chatSession = model.startChat({ history: messages.slice(0, -1) });
+        const result = await chatSession.sendMessage(msg);
+        const resposta = result.response.text();
+
+        chatHistory.push({ role: "user", parts: [{ text: msg }] });
+        chatHistory.push({ role: "model", parts: [{ text: resposta }] });
+
+        if (chatHistory.length > 40) chatHistory = chatHistory.slice(-40);
+        localStorage.setItem('chatHistory_aluno', JSON.stringify(chatHistory));
+
+        document.getElementById(typingId)?.remove();
+        appendMsg('bot', resposta);
+        atualizarSidebar();
+
+    } catch (e) {
+        document.getElementById(typingId)?.remove();
+        appendMsg('bot', '⚠️ Erro de conexão. Tente novamente em instantes.');
+        console.error(e);
+    }
+}
 
 // ===== SIDEBAR =====
+function atualizarSidebar() {
+    const list = document.getElementById('history-list-aluno');
+    if (!list) return;
+    list.innerHTML = '';
+
+    if (chatHistory.length === 0) return;
+
+    const userMsgs = chatHistory
+        .filter(m => m.role === 'user')
+        .slice(-8)
+        .reverse();
+
+    userMsgs.forEach((m) => {
+        const texto = m.parts[0].text;
+        const resumo = texto.length > 28 ? texto.substring(0, 28) + '...' : texto;
+        const div = document.createElement('div');
+        div.className = 'history-item';
+        div.innerHTML = `<div class="history-item-dot"></div><span class="history-item-name">${resumo}</span>`;
+        list.appendChild(div);
+    });
+}
 
 // ===== UTILITÁRIOS =====
+function appendMsg(role, text) {
+    const chat = document.getElementById('chat-window-aluno');
+    if (!chat) return;
+
+    const empty = chat.querySelector('.empty-state');
+    if (empty) empty.remove();
+
+    const div = document.createElement('div');
+    div.className = `msg ${role}`;
+    div.innerText = text;
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+}
 
 // ===== EXPOSIÇÃO DE FUNÇÕES =====
-
+window.nextStep = nextStep;
+window.fazerLoginAluno = fazerLoginAluno;
+window.salvarPerfilAluno = salvarPerfilAluno;
+window.sendMessageAluno = sendMessageAluno;
 // ===== VOZ - ALUNO =====
+let recognitionAluno = null;
+let isRecordingAluno = false;
+
+window.toggleVoiceAluno = function() {
+    const btn = document.getElementById('btn-voice-aluno');
+    const input = document.getElementById('user-input-aluno');
+
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        alert('Seu navegador não suporta reconhecimento de voz. Tente o Chrome.');
+        return;
+    }
+
+    if (isRecordingAluno) {
+        recognitionAluno?.stop();
+        return;
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognitionAluno = new SpeechRecognition();
+    recognitionAluno.lang = 'pt-BR';
+    recognitionAluno.continuous = false;
+    recognitionAluno.interimResults = true;
+
+    recognitionAluno.onstart = () => {
+        isRecordingAluno = true;
+        btn?.classList.add('recording');
+        if (input) input.placeholder = '🎙️ Ouvindo...';
+    };
+
+    recognitionAluno.onresult = (e) => {
+        const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+        if (input) input.value = transcript;
+    };
+
+    recognitionAluno.onend = () => {
+        isRecordingAluno = false;
+        btn?.classList.remove('recording');
+        if (input) input.placeholder = 'Pergunte qualquer coisa sobre os seus estudos...';
+    };
+
+    recognitionAluno.onerror = () => {
+        isRecordingAluno = false;
+        btn?.classList.remove('recording');
+        if (input) input.placeholder = 'Pergunte qualquer coisa sobre os seus estudos...';
+    };
+
+    recognitionAluno.start();
+};

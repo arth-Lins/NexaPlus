@@ -10,19 +10,19 @@
         *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
         :root {
-            --bg:       #0d0d10;
-            --surface:  #141418;
-            --surface2: #1c1c22;
-            --border:   rgba(255,255,255,0.07);
-            --border2:  rgba(255,255,255,0.12);
-            --cream:    #f3df9a;
-            --mint:     #b6dcc7;
-            --rose:     #cd9699;
-            --lavender: #bbabd7;
-            --white:    #ffffff;
-            --text:     #e2e0ea;
-            --muted:    rgba(255,255,255,0.45);
-            --subtle:   rgba(255,255,255,0.22);
+            --bg:        #0d0d10;
+            --surface:   #141418;
+            --surface2:  #1c1c22;
+            --border:    rgba(255,255,255,0.07);
+            --border2:   rgba(255,255,255,0.12);
+            --cream:     #f3df9a;
+            --mint:      #b6dcc7;
+            --rose:      #cd9699;
+            --lavender:  #bbabd7;
+            --white:     #ffffff;
+            --text:      #e2e0ea;
+            --muted:     rgba(255,255,255,0.45);
+            --subtle:    rgba(255,255,255,0.22);
         }
 
         body {
@@ -143,6 +143,10 @@
             box-shadow: 0 12px 36px rgba(0,0,0,0.4);
             border-color: var(--border2);
         }
+        .perfil.ativo {
+            background: var(--surface2);
+            box-shadow: 0 0 0 2px rgba(255,255,255,0.05), 0 12px 36px rgba(0,0,0,0.6);
+        }
         .perfil-icon { font-size: 38px; margin-bottom: 14px; }
         .perfil h3 { font-family: 'Baloo 2', cursive; font-size: 1.05rem; color: var(--white); margin-bottom: 8px; }
         .perfil p { font-size: 0.88rem; color: var(--muted); line-height: 1.65; margin-bottom: 14px; }
@@ -158,88 +162,190 @@
             border: 1px solid rgba(183,221,200,0.2);
         }
 
-        /* ===== ESTRATÉGIAS ===== */
+        /* ===== CONTEÚDO DAS TRILHAS DINÂMICAS ===== */
+        .trilha-conteudo {
+            display: none;
+            animation: fadeIn 0.4s ease forwards;
+            margin-top: 20px;
+        }
+        .trilha-conteudo.ativo { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .painel-didatico {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 32px;
+            margin-bottom: 40px;
+        }
+
+        .grid-visual-demo {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 24px;
+        }
+        @media (max-width: 768px) { .grid-visual-demo { grid-template-columns: 1fr; } }
+
+        /* Simulação de Infográfico / Mapa Mental */
+        .mapa-mental-box {
+            background: #191922;
+            border: 1px dashed var(--mint);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 220px;
+            position: relative;
+        }
+        .nodo-central {
+            background: var(--mint);
+            color: #0d0d10;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-family: 'Sora', sans-serif;
+            box-shadow: 0 4px 15px rgba(182,220,199,0.3);
+            z-index: 2;
+        }
+        .linha-conexao {
+            width: 2px; height: 40px;
+            background: rgba(182,220,199,0.3);
+            margin: 4px 0;
+        }
+        .nodos-satelite {
+            display: flex; gap: 12px; width: 100%; justify-content: center;
+        }
+        .nodo-filho {
+            background: var(--surface2);
+            border: 1px solid var(--border2);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            color: var(--white);
+            text-align: center;
+        }
+
+        /* Player Auditivo Fake */
+        .player-audio-simulado {
+            background: #191922;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .player-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+        .waveform {
+            display: flex; align-items: center; gap: 4px; height: 32px; margin: 16px 0;
+        }
+        .bar {
+            flex-grow: 1; height: 100%; background: var(--lavender); opacity: 0.3; border-radius: 20px;
+            animation: pulseWave 1.2s ease-in-out infinite alternate;
+        }
+        .bar:nth-child(2d) { animation-delay: 0.2s; height: 70%; }
+        .bar:nth-child(3) { animation-delay: 0.4s; height: 40%; }
+        .bar:nth-child(4) { animation-delay: 0.1s; height: 90%; }
+        .bar:nth-child(5) { animation-delay: 0.5s; height: 60%; }
+        @keyframes pulseWave { from { transform: scaleY(0.4); opacity: 0.3; } to { transform: scaleY(1.1); opacity: 0.9; } }
+        
+        .btn-play-simulado {
+            background: var(--lavender); color: #0d0d10; border: none; padding: 10px 20px; 
+            border-radius: 10px; font-weight: 700; font-size: 0.85rem; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 8px;
+        }
+
+        /* Laboratório Prático Cinestésico */
+        .interacao-cinestesica {
+            background: #191922;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+        }
+        .btn-experimento {
+            background: transparent; border: 2px solid var(--rose); color: var(--rose);
+            padding: 12px 24px; border-radius: 12px; font-weight: 700; cursor: pointer;
+            transition: all 0.3s; font-family: 'Sora', sans-serif; margin-top: 16px;
+        }
+        .btn-experimento:hover { background: var(--rose); color: #fff; box-shadow: 0 0 20px rgba(205,150,153,0.4); }
+
+        /* Bloco de Notas Textual */
+        .bloco-leitura-listas {
+            background: #191922;
+            border-left: 4px solid var(--cream);
+            border-radius: 4px 16px 16px 4px;
+            padding: 24px;
+        }
+        .bloco-leitura-listas ul { margin-left: 20px; margin-top: 12px; }
+        .bloco-leitura-listas li { margin-bottom: 8px; font-size: 0.92rem; color: var(--text); }
+
+        /* ===== INTERATIVIDADE DAS ESTRATÉGIAS GERAIS ===== */
         .estrategia {
             background: var(--surface);
-            border-radius: 18px;
+            border-radius: 22px;
             border: 1px solid var(--border);
-            border-left: 4px solid var(--lavender);
             padding: 32px;
-            margin-bottom: 20px;
-            transition: all 0.3s;
+            margin-bottom: 32px;
+            transition: all 0.3s ease;
         }
-        .estrategia:hover {
-            background: var(--surface2);
-            transform: translateX(4px);
-            border-color: var(--border2);
-        }
-        .estrategia-header { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; }
+        .estrategia-header { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
         .estrategia-header .e-icon { font-size: 32px; flex-shrink: 0; }
-        .estrategia-header h3 { font-family: 'Baloo 2', cursive; font-size: 1.2rem; color: var(--white); }
-        
-        .estrategia p { font-size: 0.94rem; color: var(--text); line-height: 1.7; opacity: 0.9; }
+        .estrategia-header h3 { font-family: 'Baloo 2', cursive; font-size: 1.3rem; color: var(--white); }
+        .estrategia p { font-size: 0.95rem; color: var(--text); line-height: 1.7; opacity: 0.95; margin-bottom: 20px;}
         
         .estrategia-dica {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 12px;
-            padding: 16px 20px;
-            margin-top: 18px;
+            background: rgba(243,223,154,0.04);
+            border-radius: 14px;
+            padding: 18px 22px;
+            margin-top: 24px;
             font-size: 0.88rem;
             color: var(--cream);
-            border-left: 2px solid var(--cream);
+            border-left: 3px solid var(--cream);
             line-height: 1.6;
         }
         .estrategia-dica::before { content: '💡 Dica para professores AEE: '; font-weight: 800; color: var(--cream); }
 
-        /* ===== RECURSOS PARA AEE ===== */
-        .aee-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 20px;
+        /* Componente Sandbox: Mapa Mental Interact */
+        .sandbox-mapa {
+            background: #181820; border: 1px solid var(--border2); border-radius: 16px; padding: 24px; text-align: center;
         }
-        .aee-card {
-            background: var(--surface);
-            border-radius: 20px;
-            padding: 32px 24px;
-            border: 1px solid var(--border);
-            border-top: 3px solid var(--rose);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transition: all 0.3s;
+        .mapa-interactive-display {
+            display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 16px; min-height: 45px;
         }
-        .aee-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 36px rgba(0,0,0,0.4);
-            border-color: var(--border2);
+        .btn-add-nodo {
+            background: var(--mint); color: #0d0d10; border: none; padding: 8px 16px; border-radius: 8px;
+            font-weight: 700; cursor: pointer; font-size: 0.85rem; font-family: 'Sora', sans-serif;
         }
-        .aee-card .a-icon { font-size: 38px; margin-bottom: 14px; }
-        .aee-card h3 { font-family: 'Baloo 2', cursive; font-size: 1.1rem; color: var(--white); margin-bottom: 8px; }
-        .aee-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.65; margin-bottom: 20px; flex-grow: 1; }
-        
-        .btn-aee {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 12px 24px;
-            border-radius: 12px;
-            font-family: 'Sora', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 700;
-            text-decoration: none;
-            cursor: pointer;
-            border: none;
-            background: var(--rose);
-            color: #fff;
-            box-shadow: 0 4px 14px rgba(205,150,153,0.15);
-            transition: all 0.3s;
+
+        /* Componente Sandbox: Pomodoro Adaptável */
+        .sandbox-pomodoro {
+            background: #181820; border: 1px solid var(--border2); border-radius: 16px; padding: 24px; text-align: center;
         }
-        .btn-aee:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(205,150,153,0.3);
-            background: #d9a5a8;
+        .pomo-timer { font-family: 'Sora', sans-serif; font-size: 2.2rem; font-weight: 800; color: var(--white); margin: 10px 0; }
+        .pomo-controls { display: flex; gap: 10px; justify-content: center; margin-bottom: 14px; }
+        .btn-pomo {
+            padding: 6px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer; border: none; font-family: 'Sora', sans-serif;
         }
+        .pomo-progress-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; }
+        .pomo-progress-bar { width: 40%; height: 100%; background: var(--lavender); transition: width 0.3s; }
+
+        /* Componente Sandbox: Ritmo Musical */
+        .sandbox-ritmo {
+            background: #181820; border: 1px solid var(--border2); border-radius: 16px; padding: 24px;
+        }
+        .ritmo-grid-pads { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+        .pad-musica {
+            background: rgba(205,150,153,0.1); border: 1px solid rgba(205,150,153,0.3); color: var(--rose);
+            padding: 14px; border-radius: 10px; font-weight: 700; font-size: 0.82rem; cursor: pointer; text-align: center;
+            transition: all 0.2s;
+        }
+        .pad-musica:active { background: var(--rose); color: #fff; transform: scale(0.95); }
 
         /* ===== FOOTER ===== */
         .site-footer {
@@ -253,17 +359,16 @@
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .navbar { height: 70px; }
-            .sm-container { padding: 36px 20px 60px; }
-            .estrategia { padding: 22px; }
+            .estrategia { padding: 24px; }
         }
         @media (max-width: 600px) {
-            .perfis-grid, .aee-grid { grid-template-columns: 1fr; }
+            .perfis-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
- <div vw class="enabled" style="position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:9999;">
+    <div vw class="enabled" style="position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:9999;">
         <div vw-access-button class="active"></div>
         <div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div>
     </div>
@@ -286,7 +391,7 @@
     <section class="page-hero">
         <span class="icon">🧠</span>
         <h1>Na Minha Forma de Aprender</h1>
-        <p>Cada pessoa tem um jeito único de assimilar o mundo. Aqui, alunos compartilham suas experiências, professores encontram estratégias de AEE e todos descobrem caminhos acessíveis para o conhecimento.</p>
+        <p>Cada pessoa tem um jeito único de assimilar o mundo. Escolha um dos perfis abaixo para explorar e ativar os conteúdos adaptados de cada trilha de aprendizagem.</p>
     </section>
 
     <main class="container">
@@ -299,25 +404,25 @@
         </div>
 
         <div class="perfis-grid">
-            <div class="perfil" onclick="this.classList.toggle('ativo')">
+            <div class="perfil ativo" id="btn-visual" onclick="alternarTrilha('visual', this)">
                 <div class="perfil-icon">👁️</div>
                 <h3>Aprendiz Visual</h3>
                 <p>Aprende melhor com imagens, gráficos, mapas mentais e cores explicativas.</p>
                 <span class="perfil-tag">Visual</span>
             </div>
-            <div class="perfil" onclick="this.classList.toggle('ativo')" style="border-top-color: var(--lavender)">
+            <div class="perfil" id="btn-auditivo" onclick="alternarTrilha('auditivo', this)" style="border-top-color: var(--lavender)">
                 <div class="perfil-icon">👂</div>
                 <h3>Aprendiz Auditivo</h3>
                 <p>Absorve melhor ouvindo explicações, audiobooks, músicas e podcasts.</p>
                 <span class="perfil-tag" style="color: var(--lavender); background: rgba(187,171,215,0.1); border-color: rgba(187,171,215,0.2)">Auditivo</span>
             </div>
-            <div class="perfil" onclick="this.classList.toggle('ativo')" style="border-top-color: var(--rose)">
+            <div class="perfil" id="btn-cinestesico" onclick="alternarTrilha('cinestesico', this)" style="border-top-color: var(--rose)">
                 <div class="perfil-icon">🤲</div>
                 <h3>Aprendiz Cinestésico</h3>
                 <p>Aprende executando na prática, tocando, experimentando e movimentando-se.</p>
                 <span class="perfil-tag" style="color: var(--rose); background: rgba(205,150,153,0.1); border-color: rgba(205,150,153,0.2)">Cinestésico</span>
             </div>
-            <div class="perfil" onclick="this.classList.toggle('ativo')" style="border-top-color: var(--cream)">
+            <div class="perfil" id="btn-textual" onclick="alternarTrilha('textual', this)" style="border-top-color: var(--cream)">
                 <div class="perfil-icon">📖</div>
                 <h3>Aprendiz Leitura</h3>
                 <p>Aprende melhor lendo textos profundos, tomando notas e organizando listas.</p>
@@ -326,55 +431,169 @@
         </div>
 
         <div class="section-header">
-            <div class="s-icon">⚡</div>
+            <div class="s-icon">🎯</div>
             <div>
-                <h2>Estratégias Práticas</h2>
+                <h2>Conteúdo da Trilha Ativa</h2>
             </div>
         </div>
 
-        <div class="estrategia" style="border-left-color: var(--mint)">
+        <div id="trilha-visual" class="trilha-conteudo ativo">
+            <div class="painel-didatico" style="border-top: 4px solid var(--mint)">
+                <h3 style="font-family: 'Baloo 2', cursive; font-size: 1.4rem; margin-bottom: 12px; color: var(--white);">Espaço de Aprendizado Visual</h3>
+                <p>Para quem absorve conceitos através de padrões espaciais, infográficos e diferenciação por cores. Abaixo está um exemplo prático de estrutura não-linear para simplificar temas complexos:</p>
+                
+                <div class="grid-visual-demo">
+                    <div class="mapa-mental-box">
+                        <div class="nodo-central">Conceito Central</div>
+                        <div class="linha-conexao"></div>
+                        <div class="nodos-satelite">
+                            <div class="nodo-filho" style="border-color: var(--mint);">Subtópico A (Cores)</div>
+                            <div class="nodo-filho" style="border-color: var(--lavender);">Subtópico B (Ícones)</div>
+                        </div>
+                    </div>
+                    <div style="display:flex; flex-direction:column; justify-content:center; gap: 12px;">
+                        <p style="font-size:0.9rem; line-height:1.6;"><strong style="color: var(--mint);">Destaques visuais:</strong> O uso de bordas coloridas e formas geométricas mapeia caminhos no cérebro, diminuindo o esforço de leitura e auxiliando na retenção imediata.</p>
+                        <span class="perfil-tag" style="width:fit-content;">Técnica Aplicada: Escaneabilidade Cógnitiva</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="trilha-auditivo" class="trilha-conteudo">
+            <div class="painel-didatico" style="border-top: 4px solid var(--lavender)">
+                <h3 style="font-family: 'Baloo 2', cursive; font-size: 1.4rem; margin-bottom: 12px; color: var(--white);">Espaço de Aprendizado Auditivo</h3>
+                <p>O foco aqui reside na variação de tons de voz, na sonoridade de termos complicados e na fixação através da escuta atenta e repetição verbal.</p>
+                
+                <div class="player-audio-simulado">
+                    <div class="player-header">
+                        <span style="font-size: 28px;">🎙️</span>
+                        <div>
+                            <h4 style="color: var(--white); font-size: 1rem;">Audio-Resumo: Introdução à Matéria</h4>
+                            <p style="font-size: 0.8rem; color: var(--muted);">Duração: 02:45 min · Narrado por NexaBot</p>
+                        </div>
+                    </div>
+                    <div class="waveform">
+                        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                    </div>
+                    <button class="btn-play-simulado" onclick="alert('Simulação de áudio inicializada! O audiobook adaptado inicia a reprodução do conteúdo.')">
+                        <span>▶</span> Ouvir Explicação em Áudio
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="trilha-cinestesico" class="trilha-conteudo">
+            <div class="painel-didatico" style="border-top: 4px solid var(--rose)">
+                <h3 style="font-family: 'Baloo 2', cursive; font-size: 1.4rem; margin-bottom: 12px; color: var(--white);">Espaço de Aprendizado Cinestésico</h3>
+                <p>A retenção ocorre quando o corpo participa da dinâmica. Construir maquetes, clicar em elementos interativos ou realizar experimentos físicos fixa a teoria.</p>
+                
+                <div class="grid-visual-demo">
+                    <div class="interacao-cinestesica">
+                        <span style="font-size: 40px; display:block; margin-bottom:10px;">🧪</span>
+                        <h4 style="color: var(--white); font-size: 0.95rem;">Laboratório de Teste Prático</h4>
+                        <p style="font-size: 0.82rem; color: var(--muted); margin-top:4px;">Clique para interagir e simular a reação química</p>
+                        <button class="btn-experimento" onclick="this.innerHTML='💥 Reação Concluída com Sucesso!'; this.style.borderColor='var(--mint)'; this.style.color='var(--mint)';">Misturar Componentes</button>
+                    </div>
+                    <div style="display:flex; flex-direction:column; justify-content:center;">
+                        <p style="font-size: 0.9rem; line-height: 1.6;"><strong style="color: var(--rose);">Ação Reversa:</strong> Associar cliques, movimentos e simulações digitais simula a memória muscular de laboratórios físicos, ideal para alunos hiperativos ou com demandas de engajamento ativo.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="trilha-textual" class="trilha-conteudo">
+            <div class="painel-didatico" style="border-top: 4px solid var(--cream)">
+                <h3 style="font-family: 'Baloo 2', cursive; font-size: 1.4rem; margin-bottom: 12px; color: var(--white);">Espaço de Aprendizado por Leitura e Escrita</h3>
+                <p>Para mentes que processam o mundo convertendo ideias em palavras estruturadas, relatórios, listas ordenadas e anotações minuciosas.</p>
+                
+                <div class="bloco-leitura-listas" style="margin-top: 20px;">
+                    <h4 style="color: var(--cream); font-family: 'Sora', sans-serif; font-size: 1rem;">📝 Método de Anotação Estruturada</h4>
+                    <ul>
+                        <li><strong>1. Definição do Termo:</strong> Ler e reescrever com as próprias palavras em blocos concisos.</li>
+                        <li><strong>2. Categorização:</strong> Filtrar dados cruciais em listas de bullets organizadas.</li>
+                        <li><strong>3. Revisão Textual:</strong> Criar perguntas de auto-avaliação na margem do caderno.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="section-header">
+            <div class="s-icon">⚡</div>
+            <div>
+                <h2>Estratégias Práticas Gerais</h2>
+            </div>
+        </div>
+
+        <div class="estrategia" style="border-left: 4px solid var(--mint)">
             <div class="estrategia-header">
                 <div class="e-icon">🗺️</div>
                 <h3>Mapa Mental com Imagens e Cores</h3>
             </div>
             <p>O mapa mental é uma ferramenta visual poderosa para organizar ideias de forma não-linear. Ao usar cores diferentes para cada ramo e imagens para ilustrar conceitos, alunos visuais e com TEA conseguem compreender e memorizar informações com muito mais facilidade. Ferramentas como Canva, MindMeister e até papel e canetas coloridas funcionam muito bem.</p>
+            
+            <div class="grid-visual-demo" style="margin-top: 20px;">
+                <div class="sandbox-mapa">
+                    <button class="btn-add-nodo" onclick="adicionarConceitoVisual()">+ Conectar Novo Ramo Colorido</button>
+                    <div class="mapa-interactive-display" id="container-nodos-dinamicos">
+                        <span class="nodo-filho" style="background: rgba(182,220,199,0.15); border-color: var(--mint);">🧠 Fixação Inicial</span>
+                    </div>
+                </div>
+                <div style="display:flex; align-items:center;">
+                    <p style="font-size:0.88rem; color:var(--muted); line-height:1.5;">O cérebro atípico responde melhor à fragmentação de ideias. Clique no botão ao lado para simular ramificações cromáticas que evitam a sobrecarga cognitiva.</p>
+                </div>
+            </div>
+
             <div class="estrategia-dica">Ofereça modelos prontos para alunos que precisam de estrutura inicial. Permita que o mapa seja feito em papel ou digitalmente conforme a preferência do aluno.</div>
         </div>
 
-        <div class="estrategia" style="border-left-color: var(--lavender)">
+        <div class="estrategia" style="border-left: 4px solid var(--lavender)">
             <div class="estrategia-header">
                 <div class="e-icon">⏱️</div>
                 <h3>Técnica Pomodoro Adaptada</h3>
             </div>
             <p>A técnica Pomodoro (25 minutos de foco + 5 de pausa) adaptada para alunos com TDAH, dislexia ou dificuldades de concentração. Versões adaptadas incluem ciclos menores (10-15 min) com pausas ativas. Use temporizadores visuais para tornar o tempo concreto e compreensível.</p>
-            <div class="estrategia-dica">Adapte o tempo conforme o aluno. Alguns precisam de ciclos de 5 minutos. Use relógios de areia ou apps com feedback visual (ex: Time Timer).</div>
+            
+            <div class="grid-visual-demo" style="margin-top: 20px;">
+                <div class="sandbox-pomodoro">
+                    <h4 style="color:var(--muted); font-size:0.85rem;">Temporizador Visual Adaptado</h4>
+                    <div class="pomo-timer" id="pomo-relogio">10:00</div>
+                    <div class="pomo-controls">
+                        <button class="btn-pomo" style="background: var(--lavender); color:#0d0d10;" onclick="controlarPomodoro(this)">Iniciar Ciclo Curto</button>
+                        <button class="btn-pomo" style="background: rgba(255,255,255,0.06); color:var(--white);" onclick="resetarPomodoro()">Resetar</button>
+                    </div>
+                    <div class="pomo-progress-bg">
+                        <div class="pomo-progress-bar" id="pomo-barra"></div>
+                    </div>
+                </div>
+                <div style="display:flex; align-items:center;">
+                    <p style="font-size:0.88rem; color:var(--muted); line-height:1.5;"><strong>Feedback Visual Contínuo:</strong> A redução gradual da barra de progresso horizontal remove a ansiedade causada por números correndo, ideal para autistas e alunos com TDAH.</p>
+                </div>
+            </div>
+
+            <div class="estrategia-dica">Adapte o tempo conforme o aluno. Alguns precisam de ciclos de 5 minutos. Use relógios de areia ou apps com feedback visual.</div>
         </div>
 
-        <div class="estrategia" style="border-left-color: var(--rose)">
+        <div class="estrategia" style="border-left: 4px solid var(--rose)">
             <div class="estrategia-header">
                 <div class="e-icon">🎵</div>
                 <h3>Aprendizagem com Música e Ritmo</h3>
             </div>
             <p>Transformar conteúdos acadêmicos em músicas, rimas e canções é uma estratégia poderosa para alunos com perfil auditivo e para aqueles com dislexia. A memória musical ativa diferentes regiões cerebrais e facilita a retenção de informações como tabuada, regras gramaticais e fatos históricos.</p>
+            
+            <div class="sandbox-ritmo">
+                <h4 style="color: var(--white); font-size:0.9rem; font-family:'Sora', sans-serif;">Pads de Associação Rítmica (Memorização de Conteúdo)</h4>
+                <p style="font-size:0.82rem; color:var(--muted); margin-top:2px;">Toque nos blocos sonoros abaixo para estruturar uma sequência de fixação auditiva:</p>
+                <div class="ritmo-grid-pads">
+                    <div class="pad-musica" onclick="tocarBatidaSimulada('Rima Gramatical 📝')">Rima Gramatical 📝</div>
+                    <div class="pad-musica" onclick="tocarBatidaSimulada('Ritmo de Tabuada 🔢')" style="color:var(--mint); border-color:rgba(182,220,199,0.3); background:rgba(182,220,199,0.05)">Ritmo de Tabuada 🔢</div>
+                    <div class="pad-musica" onclick="tocarBatidaSimulada('Mnemônica Histórica ⏳')" style="color:var(--cream); border-color:rgba(243,223,154,0.3); background:rgba(243,223,154,0.05)">Linha do Tempo ⏳</div>
+                </div>
+            </div>
+
             <div class="estrategia-dica">Permita que o aluno crie suas próprias músicas para memorizar conteúdos. Isso aumenta o protagonismo e a compreensão profunda do material.</div>
-        </div>
-
-        <div class="estrategia" style="border-left-color: var(--cream)">
-            <div class="estrategia-header">
-                <div class="e-icon">📅</div>
-                <h3>Rotina Visual com Passo a Passo em Imagens</h3>
-            </div>
-            <p>Para alunos com TEA ou Deficiência Intelectual, ter uma rotina visual clara com imagens de cada passo do dia escolar reduz a ansiedade e aumenta a autonomia. Quadros PECS, agendas visuais e painéis de rotina são ferramentas fundamentais no trabalho do professor AEE.</p>
-            <div class="estrategia-dica">Crie a rotina junto com o aluno usando fotos reais do ambiente escolar. Isso torna o recurso mais significativo e aumenta a adesão.</div>
-        </div>
-
-        <div class="estrategia" style="border-left-color: var(--mint)">
-            <div class="estrategia-header">
-                <div class="e-icon">🎮</div>
-                <h3>Gamificação do Aprendizado</h3>
-            </div>
-            <p>Transformar tarefas escolares em desafios com pontos, badges e recompensas aumenta significativamente o engajamento de alunos com TDAH e dificuldades de motivação. Ferramentas como ClassDojo, Kahoot adaptado e sistemas de pontos físicos são ótimas opções inclusivas.</p>
-            <div class="estrategia-dica">Certifique-se de que todos os alunos possam atingir as recompensas com metas individualizadas. A gamificação deve incluir, nunca excluir.</div>
         </div>
 
     </main>
@@ -383,5 +602,106 @@
         © 2026 <strong>NexaPlus</strong> · Na Minha Forma de Aprender · Inclusão que transforma vidas
     </footer>
 
+    <script>
+        /* Controle de abas dos Perfis superiores */
+        function alternarTrilha(idTrilha, elementoClicado) {
+            const perfis = document.querySelectorAll('.perfil');
+            perfis.forEach(perfil => perfil.classList.remove('ativo'));
+            elementoClicado.classList.add('ativo');
+
+            const conteudos = document.querySelectorAll('.trilha-conteudo');
+            conteudos.forEach(conteudo => conteudo.classList.remove('ativo'));
+
+            const trilhaAlvo = document.getElementById('trilha-' + idTrilha);
+            if (trilhaAlvo) {
+                trilhaAlvo.classList.add('ativo');
+                trilhaAlvo.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        /* Funções Interativas Complementares: 1. Gerador de Ramo de Mapa Mental */
+        const coresNodos = ['var(--mint)', 'var(--lavender)', 'var(--rose)', 'var(--cream)'];
+        const labelsNodos = ['💡 Ideia Chave', '📌 Exemplo Prático', '🔍 Detalhe Importante', '📝 Resumo do Aluno'];
+        let contadorNodo = 0;
+        
+        function adicionarConceitoVisual() {
+            const container = document.getElementById('container-nodos-dinamicos');
+            const novoNodo = document.createElement('span');
+            novoNodo.className = 'nodo-filho';
+            
+            const corSelecionada = coresNodos[contadorNodo % coresNodos.length];
+            novoNodo.style.borderColor = corSelecionada;
+            novoNodo.style.background = corSelecionada + '15'; // transparência de fundo
+            novoNodo.innerText = labelsNodos[contadorNodo % labelsNodos.length];
+            
+            container.appendChild(novoNodo);
+            contadorNodo++;
+        }
+
+        /* Funções Interativas Complementares: 2. Temporizador Adaptado Pomodoro */
+        let rodandoTimer = false;
+        let tempoRestante = 600; // 10 minutos adaptados em segundos
+        let intervaloTimer;
+
+        function controlarPomodoro(botao) {
+            if (rodandoTimer) {
+                clearInterval(intervaloTimer);
+                botao.innerText = "Retomar Foco";
+                rodandoTimer = false;
+            } else {
+                botao.innerText = "Pausar Ciclo";
+                rodandoTimer = true;
+                intervaloTimer = setInterval(() => {
+                    if(tempoRestante > 0) {
+                        tempoRestante--;
+                        atualizarInterfacePomodoro();
+                    } else {
+                        clearInterval(intervaloTimer);
+                        alert("Ciclo Concluído! Hora da pausa ativa (5 minutos para movimentação).");
+                        resetarPomodoro();
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetarPomodoro() {
+            clearInterval(intervaloTimer);
+            tempoRestante = 600;
+            rodandoTimer = false;
+            document.querySelector('.btn-pomo').innerText = "Iniciar Ciclo Curto";
+            atualizarInterfacePomodoro();
+        }
+
+        function atualizarInterfacePomodoro() {
+            const minutos = Math.floor(tempoRestante / 60);
+            const segundos = tempoRestante % 60;
+            document.getElementById('pomo-relogio').innerText = 
+                `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
+            
+            const porcentagemProgresso = ((600 - tempoRestante) / 600) * 100;
+            document.getElementById('pomo-barra').style.width = porcentagemProgresso + '%';
+        }
+
+        /* Funções Interativas Complementares: 3. Estúdio de Associação Sonora */
+        function tocarBatidaSimulada(tipo) {
+            // Emissão de som sintético via Web Audio API (Totalmente nativo e sem dependências externas)
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if(audioCtx) {
+                const oscilador = audioCtx.createOscillator();
+                const ganho = audioCtx.createGain();
+                
+                oscilador.connect(ganho);
+                ganho.connect(audioCtx.destination);
+                
+                oscilador.type = 'triangle';
+                oscilador.frequency.setValueAtTime(320, audioCtx.currentTime); // Frequência confortável
+                ganho.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                ganho.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+                
+                oscilador.start();
+                oscilador.stop(audioCtx.currentTime + 0.4);
+            }
+        }
+    </script>
 </body>
 </html>

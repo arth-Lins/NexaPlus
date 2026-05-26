@@ -1,14 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NexaPlus - Ensino para Cada Mente</title>
+    <title>NexaPlus — Ensino para Cada Mente</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
     <style>
-        /* ===== RESET E VARIÁVEIS ===== */
-     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
         :root {
             --bg:       #0d0d10;
@@ -32,8 +31,8 @@
             color: var(--text);
             overflow-x: hidden;
         }
-        
-        /* ===== NAVBAR CORRIGIDA ===== */
+
+        /* ===== NAVBAR ===== */
         .navbar {
             position: fixed;
             top: 0; left: 0; right: 0;
@@ -73,7 +72,7 @@
         }
         .nav-link:hover { color: var(--white); background: rgba(255,255,255,0.06); }
 
-         /* ===== HERO SECTION ===== */
+        /* ===== HERO ===== */
         .hero {
             min-height: 100vh;
             position: relative;
@@ -95,7 +94,7 @@
                 var(--bg);
         }
 
-        /*Decorative orbs*/
+        /* Decorative orbs */
         .orb {
             position: absolute;
             border-radius: 50%;
@@ -170,8 +169,8 @@
             letter-spacing: -0.01em;
         }
         .hero-tagline strong { color: var(--white); font-weight: 600; }
-        
-            /* ===== BOTÕES ===== */
+
+        /* ===== CTA BUTTONS ===== */
         .cta-buttons {
             display: flex;
             gap: 16px;
@@ -246,7 +245,7 @@
             50%      { transform: rotate(45deg) translateY(5px); }
         }
 
-                /* ===== DIVIDER ===== */
+        /* ===== DIVIDER ===== */
         .gradient-divider {
             height: 1px;
             background: linear-gradient(90deg, transparent, var(--mint), var(--lavender), var(--rose), transparent);
@@ -470,10 +469,7 @@
             .videos-grid, .imagens-grid { grid-template-columns: 1fr; }
             .equipe-grid { grid-template-columns: 1fr 1fr; }
         }
-
-        
     </style>
-    
 </head>
     <!-- ACESSIBILIDADE-->
 <body>
@@ -495,45 +491,6 @@
         <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
         <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
     </div>
-
-    <header class="navbar">
-        <div class="logo-area">
-            <a href="index.html">
-                <img src="icon.png" alt="Nexaplus Logo" class="nav-logo-img">
-            </a>
-        </div>
-      
-    </header>
-
-    <section class="hero">
-        <div class="overlay"></div>
-        <div class="hero-content">
-            <div class="badge">✦ Tecnologia & Inclusão</div>
-            
-            <img src="infinity.png" alt="Nexaplus Infinito" class="hero-logo-main">
-
-            <p class="subtitle">
-                Transformando a aprendizagem de estudantes atípicos com Inteligência Artificial adaptativa.
-            </p>
-
-            <div class="cta-buttons">
-                <a href="#" class="btn btn-professor" id="btn-professor">
-                    <span>🎓</span> Sou Professor
-                </a>
-                <a href="#" class="btn btn-aluno" id="btn-aluno">
-                    <span>📚</span> Sou Aluno
-                </a>
-            </div>
-
-            <div class="scroll-hint" onclick="document.getElementById('saiba-mais').scrollIntoView({behavior:'smooth'})">
-                <span>Conheça o projeto</span>
-                <div class="scroll-arrow"></div>
-            </div>
-
-        </div>
-    </section>
-
-    <div class="gradient-divider"></div>
 
     <!-- NAVBAR -->
     <header class="navbar">

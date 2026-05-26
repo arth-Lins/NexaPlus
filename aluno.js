@@ -1,7 +1,9 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, signInWithRedirect, getRedirectResult, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, signInWithPopup, getRedirectResult, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+// ===== CONFIGURAÇÃO DO FIREBASE =====
 const firebaseConfig = {
     apiKey: "AIzaSyD1bH3bgVXww_prqfr1-TF4rbCl4Aag2C0",
     authDomain: "eduadapt-12a2e.firebaseapp.com",
@@ -15,52 +17,16 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
-const genAI = new GoogleGenerativeAI("AIzaSyBAsPpRe8gvEfNuzzBr27w78SafBdIVbs8");
 
-// ===== ESTADO =====
-let perfilAluno = JSON.parse(localStorage.getItem('perfilAluno')) || null;
-let chatHistory = JSON.parse(localStorage.getItem('chatHistory_aluno')) || [];
+const BACKEND_FUNCTION_URL = "http://127.0.0.1:5001/eduadapt-12a2e/us-central1/tutorIA";
 
-// ===== ROTEAMENTO INICIAL =====
-const urlParams = new URLSearchParams(window.location.search);
-const isDirect = urlParams.get('direct') === 'true';
-const isSetup = urlParams.get('setup') === 'true';
-const savedNome = localStorage.getItem('alunoNome');
+// ===== ESTADO REESTRUTURADO =====
+let listaConversas = JSON.parse(localStorage.getItem('listaConversas_aluno')) || [];
+let chatIdAtivo = localStorage.getItem('chatIdAtivo_aluno') || null;
 
-// Verifica redirecionamento baseado nos parâmetros e sessão salva
-if (isDirect && savedNome && perfilAluno) {
-    // Sessão ativa + perfil completo: vai direto para o chat
-    irParaChat(savedNome);
-} else if (isSetup && savedNome && !perfilAluno) {
-    // Veio do login.html após login, sem perfil: mostra formulário de perfil-
-    const el = document.getElementById('welcome-aluno-text');
-    if (el) el.innerText = `Olá, ${savedNome.split(' ')[0]}! Vamos te conhecer.`;
-    nextStep(3);
-} else if (savedNome && perfilAluno) {
-    // Sessão salva normalmente (ex: botões "Sou Aluno" do index): vai para o chat
-    irParaChat(savedNome);
-}
-// else: exibe o onboarding normal (steps 1, 2...)
+const savedPerfil = localStorage.getItem('perfilAluno');
 
-// ===== RESULTADO DO REDIRECT (fluxo de primeiro acesso via professor.html) =====
-getRedirectResult(auth).then((result) => {
-    const user = result?.user;
-    if (!user) return;
-
-    const nome = user.displayName || "Estudante";
-    localStorage.setItem('alunoNome', nome);
-    localStorage.setItem('userRole', 'aluno');
-
-    if (perfilAluno) {
-        irParaChat(nome);
-    } else {
-        const el = document.getElementById('welcome-aluno-text');
-        if (el) el.innerText = `Olá, ${nome.split(' ')[0]}! Vamos te conhecer.`;
-        nextStep(3);
-    }
-}).catch(console.error);
-
-// ===== ETAPAS =====
+// ===== NAVEGAÇÃO DO ONBOARDING =====
 function nextStep(num) {
     document.querySelectorAll('.step').forEach(s => {
         s.style.display = 'none';
@@ -72,187 +38,255 @@ function nextStep(num) {
     target.classList.add('active');
 }
 
-async function fazerLoginAluno() {
-    try {
-        // Tenta popup primeiro (mais fluido); fallback para redirect se bloquear
-        const result = await signInWithPopup(auth, provider);
-        const user = result.user;
-        const nome = user.displayName || "Estudante";
-
-        localStorage.setItem('alunoNome', nome);
-        localStorage.setItem('userRole', 'aluno');
-
-        if (perfilAluno) {
-            irParaChat(nome);
-        } else {
-            const el = document.getElementById('welcome-aluno-text');
-            if (el) el.innerText = `Olá, ${nome.split(' ')[0]}! Vamos te conhecer.`;
-            nextStep(3);
-        }
-    } catch (err) {
-        // Fallback para redirect (mobile)
-        await signInWithRedirect(auth, provider);
-    }
-}
-
-function salvarPerfilAluno() {
-    const nome = localStorage.getItem('alunoNome') || "Estudante";
-    const serie = document.getElementById('aluno-serie')?.value?.trim() || "";
-    const idade = document.getElementById('aluno-idade')?.value || "";
-    const neuro = document.getElementById('aluno-neuro')?.value?.trim() || "";
-
-    perfilAluno = { nome, serie, idade, neuro };
-    localStorage.setItem('perfilAluno', JSON.stringify(perfilAluno));
-
-    irParaChat(nome);
-}
-// ===== IR PARA O CHAT =====
-function irParaChat(nome) {
+// ===== ROTEAMENTO INICIAL =====
+if (savedPerfil) {
     document.getElementById('main-container').style.display = 'none';
     document.getElementById('dashboard-aluno').style.display = 'flex';
-
-    const nomeEl = document.getElementById('chat-aluno-name');
-    if (nomeEl) nomeEl.innerText = `Tutor de ${nome.split(' ')[0]}`;
-
-    const sidebarNome = document.getElementById('sidebar-nome-aluno');
-    if (sidebarNome) sidebarNome.innerText = nome.split(' ')[0];
-
-    const neuroTag = document.getElementById('aluno-neuro-tag');
-    if (neuroTag && perfilAluno?.neuro) {
-        neuroTag.innerText = perfilAluno.neuro;
-        neuroTag.style.display = 'inline-block';
+    inicializarHistoricoChats();
+} else {
+    const savedNome = localStorage.getItem('alunoNomeProvisorio');
+    if (savedNome) {
+        const welcomeEl = document.getElementById('welcome-text');
+        if (welcomeEl) welcomeEl.innerText = `Bem-vindo(a), ${savedNome.split(' ')[0]}!`;
+        nextStep(3);
     }
-
-    const chat = document.getElementById('chat-window-aluno');
-    if (!chat) return;
-    chat.innerHTML = '';
-
-    if (chatHistory.length > 0) {
-        chatHistory.forEach(m => {
-            const role = m.role === 'user' ? 'user' : 'bot';
-            appendMsg(role, m.parts[0].text);
-        });
-    } else {
-        appendMsg('bot', `Oi, ${nome.split(' ')[0]}! 👋 Sou seu tutor pessoal. Estou aqui para te ajudar a entender qualquer assunto do jeito que funciona melhor pra você.\n\nO que você quer aprender hoje?`);
-    }
-
-    atualizarSidebar();
 }
 
-//===== PROMPT DO SISTEMA =====
-function buildSystemPromptAluno() {
-    const p = perfilAluno || {};
-    return `Você é um tutor educacional gentil, paciente e criativo para o aluno ${p.nome || 'estudante'}.
+getRedirectResult(auth).then((result) => {
+    const user = result?.user;
+    if (!user) return;
+    tratarLoginSucesso(user);
+}).catch(console.error);
 
-PERFIL DO ALUNO:
-- Nome: ${p.nome || 'não informado'}
-- Série: ${p.serie || 'não informada'}
-- Idade: ${p.idade || 'não informada'}
-- Condição/Neurodivergência: ${p.neuro || 'não informada'}
-
-DIRETRIZES:
-1. Use linguagem simples, clara e amigável
-2. Divida explicações em partes menores quando o assunto for complexo
-3. Use exemplos do dia a dia, analogias e comparações visuais
-4. Se o aluno tiver TDAH: seja direto, use listas curtas, evite textos longos
-5. Se o aluno tiver TEA: seja literal e preciso, evite metáforas confusas
-6. Se o aluno tiver dislexia: prefira bullet points e frases curtas
-7. Sempre encoraje e elogie o esforço
-8. Se o aluno errar: corrija gentilmente, sem julgamento
-9. Ofereça exercícios práticos quando adequado
-10. Termine respostas longas com um resumo curto`;
-}
-
-// ===== MENSAGEM =====
-async function sendMessageAluno() {
-    const input = document.getElementById('user-input-aluno');
-    const chat = document.getElementById('chat-window-aluno');
-    const msg = input?.value?.trim();
-    if (!msg || !chat) return;
-
-    input.value = '';
-    appendMsg('user', msg);
-
-    const typingId = 'typing_' + Date.now();
-    chat.innerHTML += `<div id="${typingId}" class="typing-indicator"><span></span><span></span><span></span></div>`;
-    chat.scrollTop = chat.scrollHeight;
-
+async function verificarPerfilAposLogin() {
     try {
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
-        const systemPrompt = buildSystemPromptAluno();
-
-        const messages = [
-            { role: "user", parts: [{ text: systemPrompt + "\n\nResponda a próxima mensagem como tutor." }] },
-            { role: "model", parts: [{ text: "Entendido! Estou pronto para ser seu tutor. Pode perguntar!" }] },
-            ...chatHistory,
-            { role: "user", parts: [{ text: msg }] }
-        ];
-
-        const chatSession = model.startChat({ history: messages.slice(0, -1) });
-        const result = await chatSession.sendMessage(msg);
-        const resposta = result.response.text();
-
-        chatHistory.push({ role: "user", parts: [{ text: msg }] });
-        chatHistory.push({ role: "model", parts: [{ text: resposta }] });
-
-        if (chatHistory.length > 40) chatHistory = chatHistory.slice(-40);
-        localStorage.setItem('chatHistory_aluno', JSON.stringify(chatHistory));
-
-        document.getElementById(typingId)?.remove();
-        appendMsg('bot', resposta);
-        atualizarSidebar();
-
-    } catch (e) {
-        document.getElementById(typingId)?.remove();
-        appendMsg('bot', '⚠️ Erro de conexão. Tente novamente em instantes.');
-        console.error(e);
+        const result = await signInWithPopup(auth, provider);
+        if (result?.user) tratarLoginSucesso(result.user);
+    } catch (err) {
+        if (err.code === 'auth/popup-closed-by-user') return;
+        const user = auth.currentUser;
+        if (user) {
+            tratarLoginSucesso(user);
+            return;
+        }
+        alert("Erro ao conectar com o Google. Tente novamente.");
     }
 }
 
-// ===== SIDEBAR =====
-function atualizarSidebar() {
-    const list = document.getElementById('history-list-aluno');
-    if (!list) return;
-    list.innerHTML = '';
+function tratarLoginSucesso(user) {
+    const nome = user.displayName || "Estudante";
+    localStorage.setItem('alunoNomeProvisorio', nome);
+    localStorage.setItem('userRole', 'aluno');
 
-    if (chatHistory.length === 0) return;
+    if (localStorage.getItem('perfilAluno')) {
+        document.getElementById('main-container').style.display = 'none';
+        document.getElementById('dashboard-aluno').style.display = 'flex';
+        inicializarHistoricoChats();
+    } else {
+        const welcomeEl = document.getElementById('welcome-text');
+        if (welcomeEl) welcomeEl.innerText = `Bem-vindo(a), ${nome.split(' ')[0]}!`;
+        const nomeInput = document.getElementById('nome-aluno');
+        if (nomeInput && !nomeInput.value) nomeInput.value = nome;
+        nextStep(3);
+    }
+}
 
-    const userMsgs = chatHistory
-        .filter(m => m.role === 'user')
-        .slice(-8)
-        .reverse();
+function finalizarCadastroAluno() {
+    const nome = document.getElementById('nome-aluno')?.value.trim();
+    const serie = document.getElementById('serie-aluno')?.value.trim();
+    const neuro = document.getElementById('neuro-aluno')?.value.trim();
 
-    userMsgs.forEach((m) => {
-        const texto = m.parts[0].text;
-        const resumo = texto.length > 28 ? texto.substring(0, 28) + '...' : texto;
-        const div = document.createElement('div');
-        div.className = 'history-item';
-        div.innerHTML = `<div class="history-item-dot"></div><span class="history-item-name">${resumo}</span>`;
-        list.appendChild(div);
+    if (!nome || !serie) {
+        alert("Por favor, preencha o seu nome e a sua série.");
+        return;
+    }
+
+    const perfil = { nome, serie, neuro: neuro || "Não informada" };
+    localStorage.setItem('perfilAluno', JSON.stringify(perfil));
+
+    document.getElementById('main-container').style.display = 'none';
+    document.getElementById('dashboard-aluno').style.display = 'flex';
+    
+    inicializarHistoricoChats();
+}
+
+// ===== SISTEMA MULTI-CHAT (ESTILO CHATGPT) =====
+
+function inicializarHistoricoChats() {
+    if (listaConversas.length === 0) {
+        criarNovaConversa();
+    } else {
+        if (!chatIdAtivo || !listaConversas.find(c => c.id === chatIdAtivo)) {
+            chatIdAtivo = listaConversas[0].id;
+            localStorage.setItem('chatIdAtivo_aluno', chatIdAtivo);
+        }
+        renderizarListaLateral();
+        carregarMensagensChatAtivo();
+    }
+}
+
+function criarNovaConversa() {
+    const novoId = 'chat_' + Date.now();
+    const novaConversa = {
+        id: novoId,
+        titulo: "Nova conversa",
+        messages: []
+    };
+    
+    listaConversas.unshift(novaConversa);
+    chatIdAtivo = novoId;
+    
+    localStorage.setItem('listaConversas_aluno', JSON.stringify(listaConversas));
+    localStorage.setItem('chatIdAtivo_aluno', chatIdAtivo);
+    
+    renderizarListaLateral();
+    carregarMensagensChatAtivo();
+}
+
+function alternarParaChat(id) {
+    chatIdAtivo = id;
+    localStorage.setItem('chatIdAtivo_aluno', chatIdAtivo);
+    renderizarListaLateral();
+    carregarMensagensChatAtivo();
+}
+
+function renderizarListaLateral() {
+    const listContainer = document.getElementById('history-list-aluno');
+    if (!listContainer) return;
+    
+    listContainer.innerHTML = '';
+    
+    listaConversas.forEach(chat => {
+        const item = document.createElement('div');
+        item.className = `history-item ${chat.id === chatIdAtivo ? 'active' : ''}`;
+        item.onclick = () => alternarParaChat(chat.id);
+        
+        item.innerHTML = `
+            <span class="history-item-icon">💬</span>
+            <span class="sidebar-text">${chat.titulo}</span>
+        `;
+        listContainer.appendChild(item);
     });
 }
 
-// ===== UTILITÁRIOS =====
-function appendMsg(role, text) {
-    const chat = document.getElementById('chat-window-aluno');
-    if (!chat) return;
+function carregarMensagensChatAtivo() {
+    const chatWindow = document.getElementById('chat-window-aluno');
+    if (!chatWindow) return;
+    
+    chatWindow.innerHTML = '';
+    const chatAtual = listaConversas.find(c => c.id === chatIdAtivo);
+    
+    if (!chatAtual || chatAtual.messages.length === 0) {
+        chatWindow.innerHTML = `
+            <div class="empty-state" id="empty-state-aluno">
+                <div class="empty-icon">✨</div>
+                <p>Oi! Estou pronto(a) para te ajudar a aprender hoje.<br>O que vamos estudar agora?</p>
+            </div>
+        `;
+        return;
+    }
+    
+    chatAtual.messages.forEach(msg => {
+        appendMsgAluno(msg.role === 'model' ? 'bot' : 'user', msg.content);
+    });
+}
 
-    const empty = chat.querySelector('.empty-state');
-    if (empty) empty.remove();
+// ===== ENVIO DE MENSAGENS =====
+async function sendMessageAluno() {
+    const input = document.getElementById('user-input-aluno');
+    const chatWindow = document.getElementById('chat-window-aluno');
+    const msgText = input?.value?.trim();
+    
+    if (!msgText || !chatWindow) return;
 
+    input.value = '';
+    
+    // Remove o empty state caso seja a primeira mensagem do chat
+    const emptyState = document.getElementById('empty-state-aluno');
+    if (emptyState) emptyState.remove();
+
+    appendMsgAluno('user', msgText);
+
+    // Salva a mensagem do usuário no chat ativo
+    const chatAtual = listaConversas.find(c => c.id === chatIdAtivo);
+    if (chatAtual) {
+        chatAtual.messages.push({ role: "user", content: msgText });
+        // Se for a primeira mensagem, define o texto dela como título do chat lateral
+        if (chatAtual.titulo === "Nova conversa") {
+            chatAtual.titulo = msgText.length > 22 ? msgText.substring(0, 20) + "..." : msgText;
+            renderizarListaLateral();
+        }
+        localStorage.setItem('listaConversas_aluno', JSON.stringify(listaConversas));
+    }
+
+    const typingId = 'typing_' + Date.now();
+    chatWindow.innerHTML += `<div id="${typingId}" class="typing-indicator"><span></span><span></span><span></span></div>`;
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+
+    try {
+        const perfilObj = JSON.parse(localStorage.getItem('perfilAluno')) || {};
+        const systemPrompt = `Você é um tutor de estudos de IA focado em acessibilidade pedagógica para o estudante ${perfilObj.nome || 'Estudante'}.
+Série do Aluno: ${perfilObj.serie || 'Não especificada'}.
+Neurodivergência/Condição informada: ${perfilObj.neuro || 'Nenhuma'}.
+
+Instruções fundamentais de resposta:
+1. Adeque estritamente seu vocabulário e profundidade de conteúdo à série/idade do aluno.
+2. Divida explicações complexas em tópicos fáceis e estruturados.
+3. Se o aluno tiver condições específicas (ex: TDAH ou Dislexia), use mensagens diretas, evite blocos gigantescos de texto e use negritos estrategicamente para prender a atenção.
+4. Seja sempre encorajador, paciente e positivo.`;
+
+        // Mapeia o histórico do chat atual para o formato esperado pela API
+        const mappedHistory = chatAtual.messages.slice(0, -1).map(item => ({
+            role: item.role === 'model' ? 'assistant' : 'user',
+            content: item.content
+        }));
+
+        const response = await fetch(BACKEND_FUNCTION_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                model: "llama-3.1-8b-instant",
+                messages: [
+                    { role: "system", content: systemPrompt },
+                    ...mappedHistory,
+                    { role: "user", content: msgText }
+                ]
+            })
+        });
+
+        if (!response.ok) throw new Error("Erro de conexão com o servidor.");
+
+        const data = await response.json();
+        const apiResponse = data.text;
+
+        document.getElementById(typingId)?.remove();
+        appendMsgAluno('bot', apiResponse);
+
+        // Salva a resposta da IA no chat ativo
+        if (chatAtual) {
+            chatAtual.messages.push({ role: "model", content: apiResponse });
+            localStorage.setItem('listaConversas_aluno', JSON.stringify(listaConversas));
+        }
+
+    } catch (err) {
+        document.getElementById(typingId)?.remove();
+        appendMsgAluno('bot', "⚠️ Não consegui responder agora. Verifique sua conexão e tente novamente.");
+        console.error(err);
+    }
+}
+
+function appendMsgAluno(role, text) {
+    const chatWindow = document.getElementById('chat-window-aluno');
+    if (!chatWindow) return;
+    
     const div = document.createElement('div');
     div.className = `msg ${role}`;
     div.innerText = text;
-    chat.appendChild(div);
-    chat.scrollTop = chat.scrollHeight;
+    chatWindow.appendChild(div);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
 }
 
-// ===== EXPOSIÇÃO DE FUNÇÕES =====
-window.nextStep = nextStep;
-window.fazerLoginAluno = fazerLoginAluno;
-window.salvarPerfilAluno = salvarPerfilAluno;
-window.sendMessageAluno = sendMessageAluno;
-// ===== VOZ - ALUNO =====
+// ===== RECONHECIMENTO DE VOZ =====
 let recognitionAluno = null;
 let isRecordingAluno = false;
 
@@ -279,7 +313,7 @@ window.toggleVoiceAluno = function() {
     recognitionAluno.onstart = () => {
         isRecordingAluno = true;
         btn?.classList.add('recording');
-        if (input) input.placeholder = '🎙️ Ouvindo...';
+        if (input) input.placeholder = '🎙️ Ouvindo você...';
     };
 
     recognitionAluno.onresult = (e) => {
@@ -294,10 +328,33 @@ window.toggleVoiceAluno = function() {
     };
 
     recognitionAluno.onerror = () => {
-        isRecordingAluno = false;
+        isRecordingProf = false;
         btn?.classList.remove('recording');
         if (input) input.placeholder = 'Pergunte qualquer coisa sobre os seus estudos...';
     };
 
     recognitionAluno.start();
 };
+
+// Vinculações ao escopo global para o HTML
+window.nextStep = nextStep;
+window.verificarPerfilAposLogin = verificarPerfilAposLogin;
+window.finalizarCadastroAluno = finalizarCadastroAluno;
+window.sendMessageAluno = sendMessageAluno;
+window.criarNovaConversa = criarNovaConversa;
+
+// Monitoramento da tecla enter
+document.addEventListener('DOMContentLoaded', () => {
+    const input = document.getElementById('user-input-aluno');
+    if (input) {
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessageAluno();
+        });
+    }
+    
+    if (!savedPerfil && !localStorage.getItem('alunoNomeProvisorio')) {
+        const s1 = document.getElementById('step-1');
+        if (s1) s1.style.display = 'flex';
+    }
+});
+

@@ -1,403 +1,1389 @@
-
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Oficinas Inclusivas – Nexaplus</title>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet"/>
-  <style>
-    :root {
-      --verde: #696969 100%;
-      --verde-escuro: #000000;
-      --roxo: #000000;
-      --branco: #2f00ff;
-      --cinza-bg: #8a8888;
-    }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body {  background: radial-gradient(circle at center, rgb(7, 7, 7) 0%, #696969 100% ); }
- 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oficinas Inclusivas — NexaPlus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
-    /* HEADER */
-    header {
-      background:rgb(150, 150, 150);
-      border-bottom:3px solid ff0000;
-      display:flex; align-items:center; justify-content:space-between;
-      padding:0 20px; height:45px;
-      position:sticky; top:0; z-index:100;
-   
-    }
-    .logo { font-family:'Baloo 2',cursive; font-size:1.5rem; font-weight:800; color:#ffffff; text-decoration:none; display:flex; align-items:center; gap:8px; }
-    .logo span { color:var(--amarelo); }
-    .back-btn { display:flex; align-items:center; gap:8px; color:#ffffff; font-weight:700; text-decoration:none; font-size:0.95rem; border:2px solid #000000; padding:8px 18px; border-radius:50px; transition:all 0.2s; }
-    .back-btn:hover { background:#000000; color:rgb(255, 255, 255); }
+        :root {
+            --bg:       #0d0d10;
+            --surface:  #141418;
+            --surface2: #1c1c22;
+            --border:   rgba(255,255,255,0.07);
+            --border2:  rgba(255,255,255,0.12);
+            --cream:    #f3df9a;
+            --mint:     #b6dcc7;
+            --rose:     #cd9699;
+            --lavender: #bbabd7;
+            --white:    #ffffff;
+            --text:     #e2e0ea;
+            --muted:    rgba(255,255,255,0.45);
+            --subtle:   rgba(255,255,255,0.22);
+        }
 
-    /* PAGE HERO */
-    .page-hero {
-      background: linear-gradient(135deg, #f3de9b 0%, #bbabd7 100%);
-      padding:10px 10px 5px;
-      text-align:center;
-      border-bottom:solid rgb(0, 0, 0);
-    }
-    .page-hero .icon { font-size:64px; margin-bottom:16px; display:block; animation:bounce 2s ease-in-out infinite; }
-    @keyframes bounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }
-    .page-hero h1 { font-family:'Baloo 2',cursive; font-size:2.4rem; font-weight:800; color:#ffffff; margin-bottom:12px; }
-    .page-hero h3 { font-size:1.05rem; color:#ffffff; max-width:600px; margin:0 auto; line-height:1.7; }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+        }
 
-    /* FILTROS */
-    .filtros {
-      display:flex; gap:12px; flex-wrap:wrap; justify-content:center;
-      padding:30px 40px 10px;
-    }
-    .filtro {
-      padding:9px 22px; border-radius:50px; border:2px solid #000000;
-      background:rgb(255, 255, 255); color:#000000; font-weight:700; font-size:0.9rem;
-      cursor:pointer; transition:all 0.2s;
-    }
-    .filtro.active, .filtro:hover { background:#000000; color:rgb(255, 255, 255); }
+        /* ===== NAVBAR ===== */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 32px;
+            background: rgba(13,13,16,0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            height: 80px;
+        }
 
-    /* GRID DE CARDS */
-    .container { max-width:1100px; margin:0 auto; padding:30px 40px 80px; }
+        .nav-logo-img {
+            height: 52px;
+            width: auto;
+            display: block;
+            transition: transform 0.3s ease, filter 0.3s;
+        }
+        .nav-logo-img:hover { transform: scale(1.06); filter: drop-shadow(0 0 16px rgba(183,221,200,0.35)); }
 
-    .section-title {
-      font-family:'Baloo 2',cursive; font-size:1.5rem; font-weight:800;
-      color:#ffffff; margin:40px 0 20px; display:flex; align-items:center; gap:10px;
-    }
-    .section-title::after {
-      content:''; flex:1; height:3px; background:linear-gradient(90deg, rgb(255, 255, 255), transparent);
-      border-radius:2px;
-    }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-link {
+            color: var(--muted);
+            font-size: 0.88rem;
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 10px;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        .nav-link:hover { color: var(--white); background: rgba(255,255,255,0.06); }
+        .nav-link.active { color: var(--mint); background: rgba(183,221,200,0.08); border: 1px solid rgba(183,221,200,0.15); }
 
-    .cards-grid {
-      display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr));
-      gap:22px;
-    }
+        /* ===== HERO INTERNA ===== */
+        .page-hero {
+            background: linear-gradient(160deg, rgba(183,221,200,0.07) 0%, rgba(205,150,153,0.05) 100%);
+            padding: 140px 40px 50px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+        .page-hero h1 {
+            font-family: 'Baloo 2', cursive;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--white);
+            margin-bottom: 14px;
+            letter-spacing: -0.02em;
+        }
+        .page-hero h3 {
+            font-size: 1.1rem;
+            color: var(--muted);
+            max-width: 750px;
+            margin: 0 auto;
+            line-height: 1.72;
+            font-weight: 400;
+        }
 
-    .card {
-      background:rgb(0, 0, 0); border-radius:20px; overflow:hidden;
-     
-      border:2px solid transparent; transition:all 0.3s;
-      display:flex; flex-direction:column;
-    }
-    .card:hover { transform:translateY(-6px); border-color:#ffffff; box-shadow:0 12px 36px rgb(0, 0, 0); }
+        /* ===== FILTROS ===== */
+        .filtros {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 40px 20px 10px;
+        }
+        .filtro {
+            padding: 10px 22px;
+            border-radius: 50px;
+            border: 1px solid var(--border2);
+            background: var(--surface);
+            color: var(--text);
+            font-family: 'Sora', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .filtro:hover {
+            border-color: var(--muted);
+            background: var(--surface2);
+        }
+        .filtro.active {
+            background: var(--mint);
+            color: #0d0d10;
+            border-color: var(--mint);
+            box-shadow: 0 4px 12px rgba(183,221,200,0.2);
+        }
 
-    .card-top {
-      height:140px; display:flex; align-items:center; justify-content:center;
-      font-size:56px;
-    }
-    .card-body { padding:22px; flex:1; display:flex; flex-direction:column; gap:10px; }
-    .card-tag {
-      display:inline-block; padding:4px 14px; border-radius:50px;
-      font-size:0.78rem; font-weight:800; background:rgb(255, 255, 255); color:#000000;
-    }
-    .card h3 { font-family:'Baloo 2',cursive; font-size:1.2rem; color:#ffffff; }
-    .card p { font-size:0.9rem; color:#ffffff; line-height:1.6; flex:1; }
-    .card-footer {
-      padding:0 22px 18px;
-      display:flex; align-items:center; justify-content:space-between;
-    }
-    .card-meta { font-size:0.8rem; color:#ffffff; display:flex; gap:14px; }
-    .btn-ver {
-      background:rgb(0, 0, 0); color:rgb(255, 255, 255); border:none; border-radius:50px;
-      padding:8px 18px; font-family:'Nunito',sans-serif; font-weight:700;
-      font-size:0.85rem; cursor:pointer; transition:all 0.2s;
-    }
-    .btn-ver:hover { background:rgb(150, 150, 150); transform:scale(1.05); }
+        /* ===== CONTAINER PRINCIPAL ===== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 10px 40px 88px;
+        }
 
-    /* NOVO BADGE */
-    .badge-novo {
-      background:rgb(255, 0, 0); color:#000000; font-size:0.72rem; font-weight:800;
-      padding:3px 10px; border-radius:50px; margin-left:8px;
-    }
+        /* ===== DESTAQUE DO DIA ===== */
+        .hero-showcase {
+            background: linear-gradient(135deg, rgba(243,223,154,0.08) 0%, rgba(187,171,215,0.05) 100%);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 40px;
+            margin: 30px 0 50px;
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-showcase text h2 {
+            font-family: 'Baloo 2', cursive;
+            font-size: 1.6rem;
+            color: var(--white);
+            margin-bottom: 10px;
+        }
+        .hero-showcase p {
+            font-size: 0.95rem;
+            color: var(--muted);
+            line-height: 1.65;
+        }
 
-    /* DESTAQUE DO DIA */
-    .destaque-dia {
-      background: linear-gradient(135deg, #f3de9b 0%, #bbabd7 100%);
-      color:white; border-radius:24px; padding:36px;
-      display:flex; align-items:center; gap:30px;
-      margin-bottom:40px;
-      box-shadow:0 8px 32px rgba(0, 0, 0, 0.3);
-    }
-    .hero-logo-main {
-      display: block;
-      width: 100%;
-      max-width: 400px; /* Proporção destacada */
-      height: auto;
-      margin: 0 auto 30px;
-      /* Filtro suave para a logo brilhar no fundo escuro */
-      filter: drop-shadow(0 0 25px rgba(255, 255, 255, 0.1));
-      animation: floatAnim 6s ease-in-out infinite;
-    }
-    .destaque-dia h2 { font-family:'Baloo 2',cursive; font-size:1.7rem; margin-bottom:8px; }
-    .destaque-dia p { opacity:0.9; line-height:1.6; margin-bottom:16px; }
-    .btn-destaque {
-      background:rgb(255, 0, 0); color:#ff0000 100%; border:none; border-radius:50px;
-      padding:12px 28px; font-weight:800; font-size:0.95rem; cursor:pointer;
-      transition:all 0.2s;
-    }
-    .btn-destaque:hover { transform:scale(1.05); box-shadow:0 4px 16px rgba(0,0,0,0.2); }
-    @media(max-width:600px){
-      .destaque-dia { flex-direction:column; text-align:center; }
-      .cards-grid { grid-template-columns:1fr; }
-    }
-  </style>
+        /* ===== SECTIONS HEADERS ===== */
+        .section-title {
+            font-family: 'Baloo 2', cursive;
+            font-size: 1.5rem;
+            color: var(--white);
+            margin: 50px 0 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--border2), transparent);
+        }
+
+        /* ===== GRID DE CARDS ===== */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+        }
+        .card:hover {
+            transform: translateY(-6px);
+            border-color: var(--border2);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-top {
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            background: rgba(255,255,255,0.02);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .card-body {
+            padding: 24px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .card-tag {
+            align-self: flex-start;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            background: rgba(255,255,255,0.05);
+            color: var(--mint);
+            border: 1px solid rgba(183,221,200,0.15);
+        }
+        .card h3 {
+            font-family: 'Baloo 2', cursive;
+            font-size: 1.25rem;
+            color: var(--white);
+            line-height: 1.3;
+        }
+        .card p {
+            font-size: 0.9rem;
+            color: var(--muted);
+            line-height: 1.6;
+            flex: 1;
+        }
+        
+        .card-footer {
+            padding: 0 24px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .card-meta {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.3);
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn-ver {
+            background: var(--surface2);
+            color: var(--white);
+            border: 1px solid var(--border2);
+            border-radius: 12px;
+            padding: 10px 20px;
+            font-family: 'Sora', sans-serif;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .btn-ver:hover {
+            background: var(--mint);
+            color: #0d0d10;
+            border-color: var(--mint);
+        }
+
+        /* ===== INTERACTIVE MODAL SYSTEM ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(13,13,16,0.96);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        .modal-content {
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: 28px;
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 36px;
+            position: relative;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.7);
+        }
+        .close-modal {
+            position: absolute;
+            top: 24px; right: 28px;
+            font-size: 2rem;
+            color: var(--muted);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .close-modal:hover { color: var(--rose); }
+
+        .modal-header-info {
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 16px;
+        }
+        .modal-header-info h2 {
+            font-family: 'Baloo 2', cursive;
+            font-size: 1.8rem;
+            color: var(--white);
+            margin-bottom: 6px;
+        }
+        .modal-fundamentacao {
+            background: rgba(255,255,255,0.02);
+            border-left: 4px solid var(--lavender);
+            padding: 14px 18px;
+            border-radius: 4px 12px 12px 4px;
+            font-size: 0.88rem;
+            line-height: 1.6;
+            color: var(--muted);
+            margin-bottom: 24px;
+        }
+        .modal-fundamentacao strong { color: var(--white); }
+
+        /* ===== WORKSHOP GAMES/INTERACTION STYLES ===== */
+        .game-container {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        /* Common interactive components */
+        .game-btn {
+            background: var(--mint);
+            color: #0d0d10;
+            border: none;
+            padding: 12px 24px;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: 'Sora', sans-serif;
+            transition: transform 0.2s, background 0.2s;
+        }
+        .game-btn:hover { transform: scale(1.03); background: #9ec8b0; }
+        .game-btn:disabled { background: var(--border2); color: var(--muted); cursor: not-allowed; }
+
+        /* AAC Board */
+        .aac-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            width: 100%;
+        }
+        .aac-card {
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: 14px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .aac-card:hover { border-color: var(--mint); background: rgba(183,221,200,0.05); }
+        .aac-icon { font-size: 32px; margin-bottom: 6px; }
+        .aac-word { font-size: 0.85rem; font-weight: 600; }
+        .aac-bar {
+            width: 100%;
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            min-height: 54px;
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        /* Order game / sorting */
+        .sort-list {
+            display: flex;
+            gap: 12px;
+            flex-direction: column;
+            width: 100%;
+        }
+        .sort-item {
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            padding: 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .sort-item:hover { border-color: var(--cream); }
+
+        /* Memory game */
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+        .memory-tile {
+            width: 70px; height: 70px;
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            cursor: pointer;
+        }
+        .memory-tile.flipped { background: var(--surface2); border-color: var(--mint); }
+
+        /* Instrument / Xylophone */
+        .xylo-container { display: flex; gap: 8px; width: 100%; height: 180px; align-items: stretch; }
+        .xylo-key {
+            flex: 1;
+            border-radius: 8px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 16px;
+            font-weight: bold;
+            color: #0d0d10;
+            cursor: pointer;
+            transition: opacity 0.1s;
+        }
+        .xylo-key:active { opacity: 0.7; }
+
+        /* Canvas drawing */
+        .canvas-paint { background: white; border-radius: 12px; cursor: crosshair; }
+
+        /* Texture Scratch */
+        .texture-box {
+            width: 100%; height: 150px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            cursor: pointer;
+        }
+
+        /* Sound loops / podcast */
+        .track-control {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            background: var(--surface);
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        /* Braille Cells */
+        .braille-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            width: 100px;
+        }
+        .braille-dot {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: var(--surface);
+            border: 2px solid var(--border2);
+            cursor: pointer;
+        }
+        .braille-dot.active { background: var(--mint); border-color: var(--white); }
+
+        /* Bowling Slider */
+        .bowling-lane {
+            width: 100%; height: 40px;
+            background: #222; border-radius: 20px;
+            position: relative; overflow: hidden;
+        }
+        .bowling-pin-area { font-size: 32px; letter-spacing: 6px; }
+
+        /* Quiz / Dialogue option elements */
+        .quiz-option {
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: 12px;
+            padding: 14px;
+            width: 100%;
+            text-align: left;
+            color: var(--text);
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+        .quiz-option:hover { border-color: var(--mint); background: rgba(255,255,255,0.02); }
+
+        /* ===== SITE FOOTER ===== */
+        .site-footer {
+            text-align: center; padding: 28px 20px;
+            font-size: 0.85rem; color: var(--subtle);
+            border-top: 1px solid var(--border);
+            background: var(--surface);
+        }
+        .site-footer strong { color: var(--mint); }
+
+        @media (max-width: 768px) {
+            .navbar { height: 70px; }
+            .page-hero { padding-top: 120px; }
+            .hero-showcase { flex-direction: column; text-align: center; padding: 30px; }
+            .container { padding: 10px 20px 60px; }
+            .aac-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
 </head>
 <body>
 
-<header>
-  <a href="index.html" class="logo">🧩 Nexaplus</a>
-  <a href="index.html" class="back-btn">← Início</a>
-  
-</header>
-
-<div class="page-hero">
-  <h1>Oficinas Inclusivas</h1>
-  <h3>Atividades acessíveis com recursos visuais, auditivos, sensoriais e lúdicos. Novo conteúdo adicionado diariamente para todos os perfis de aprendizagem.</h3>
-</div>
-
-<div class="filtros">
-  <button class="filtro active" onclick="filtrar(this,'todos')">Todos</button>
-  <button class="filtro" onclick="filtrar(this,'sensorial')">Sensorial</button>
-  <button class="filtro" onclick="filtrar(this,'visual')">Visual</button>
-  <button class="filtro" onclick="filtrar(this,'comunicacao')">Comunicação</button>
-  <button class="filtro" onclick="filtrar(this,'jogo')">Jogos</button>
-  <button class="filtro" onclick="filtrar(this,'motor')"> Motoras</button>
-</div>
-
-<div class="container">
-  <!-- DESTAQUE DO DIA -->
- <section class="hero">
-        <div class="overlay"></div>
-        <div class="hero-content">         
-            <img src="infinity.png" alt="Nexaplus Infinito" class="hero-logo-main">
-   <div class="brand">
-  
+    <!-- VLibras plugin -->
+    <div vw class="enabled" style="position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:9999;">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div>
     </div>
-    <div>
-      <h2></h2>
-      <p></p>
-     
-    </div>
-  </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
 
-  <div class="section-title"> Comunicação Alternativa e Aumentativa</div>
-  <div class="cards-grid">
-    <div class="card" data-cat="comunicacao">
-      <div class="card-top" style="background:#f3DF9A">🗣️</div>
-      <div class="card-body">
-        <span class="card-tag">Comunicação</span>
-        <h3>Prancha de Comunicação com Pictogramas</h3>
-        <p>Crie pranchas personalizadas com imagens e símbolos para facilitar a comunicação de alunos não verbais ou com dificuldades de fala.</p>
-      </div>
-      <div class="card-footer">
-        <div class="card-meta"><span>📅 Hoje</span><span>⏱ 30min</span></div>
-        <a href="prancha-comunicacao.html" class="btn-ver" style="text-decoration:none; text-align:center;">Ver atividade</a>
-      </div>
+    <header class="navbar">
+        <a href="index.html">
+            <span style="font-family:'Baloo 2', cursive; font-size:1.6rem; color:var(--white); font-weight:800;">Nexa<span style="color:var(--mint);">Plus</span></span>
+        </a>
+        <nav class="nav-links">
+            <a href="#sobre" class="nav-link">Sobre</a>
+            <a href="#aprender" class="nav-link">Aprender</a>
+            <a href="oficinas.html" class="nav-link active">Oficinas</a>
+        </nav>
+    </header>
+
+    <section class="page-hero">
+        <h1>Oficinas Inclusivas Interativas</h1>
+        <h3>Ambiente pedagógico funcional fundamentado cientificamente para o desenvolvimento integral, autonomia e regulação de pessoas neurodivergentes.</h3>
+    </section>
+
+    <div class="filtros">
+        <button class="filtro active" onclick="filtrar(this,'todos')">Todos</button>
+        <button class="filtro" onclick="filtrar(this,'sensorial')">Sensorial</button>
+        <button class="filtro" onclick="filtrar(this,'visual')">Visual</button>
+        <button class="filtro" onclick="filtrar(this,'comunicacao')">Comunicação</button>
+        <button class="filtro" onclick="filtrar(this,'jogo')">Jogos</button>
+        <button class="filtro" onclick="filtrar(this,'motor')">Motoras</button>
     </div>
 
-    <div class="card" data-cat="comunicacao">
-      <div class="card-top" style="background:#f3DF9a">📸</div>
-      <div class="card-body">
-        <span class="card-tag">Comunicação</span>
-        <h3>Fotojornal da Turma Inclusiva </h3>
-        <p>Alunos fotografam momentos do cotidiano escolar e montam um jornal com legenda em texto, áudio e pictograma. Desenvolve expressão e autoria.</p>
-      </div>
-      <div class="card-footer">
-        <div class="card-meta"><span>📅 Hoje</span><span>⏱ 45min</span></div>
+    <main class="container">
+
+        <div class="hero-showcase">
+            <div class="showcase-text">
+                <h2>Espaço Digital Unificado de Oficinas Inclusivas</h2>
+                <p>Explore as 18 oficinas abaixo. Cada card agora possui um simulador/mini-jogo interativo projetado sob medida, alinhando a prática lúdica à fundamentação neurocientífica e pedagógica.</p>
+            </div>
+        </div>
+
+        <div class="section-title">Nossas 18 Oficinas Inclusivas</div>
+        <div class="cards-grid">
+
+            <!-- 1. Oficina Sensorial -->
+            <div class="card" data-cat="sensorial">
+                <div class="card-top">🎨</div>
+                <div class="card-body">
+                    <span class="card-tag">Sensorial</span>
+                    <h3>1. Oficina Sensorial</h3>
+                    <p>Exploração dos sentidos através de estímulos de frequências e cores integradas para organização sensorial e autorregulação.</p>
+                </div>
+                <div class="card-footer">
+                    <div class="card-meta"><span>⏱ Adaptação</span></div>
+                    <button class="btn-ver" onclick="abrirOficina('sensorial')">Jogar / Interagir</button>
+                </div>
+            </div>
+
+            <!-- 2. Oficina Visual -->
+            <div class="card" data-cat="visual">
+                <div class="card-top">📅</div>
+                <div class="card-body">
+                    <span class="card-tag">Visual</span>
+                    <h3>2. Oficina Visual</h3>
+                    <p>Uso de sequenciamento de rotina visual estruturada para previsibilidade, reduzindo a ansiedade em transições.</p>
+                </div>
+                <div class="card-footer">
+                    <div class="card-meta"><span>⏱ ABA Base</span></div>
+                    <button class="btn-ver" onclick="abrirOficina('visual')">Jogar / Interagir</button>
+                </div>
+            </div>
+
+            <!-- 3. Oficina de Comunicação -->
+            <div class="card" data-cat="comunicacao">
+                <div class="card-top">💬</div>
+                <div class="card-body">
+                    <span class="card-tag">Comunicação</span>
+                    <h3>3. Oficina de Comunicação</h3>
+                    <p>Desenvolvimento de habilidades pragmáticas da linguagem verbal e não verbal via cenários sociais empáticos.</p>
+                </div>
+                <div class="card-footer">
+                    <div class="card-meta"><span>⏱ Linguagem</span></div>
+                    <button class="btn-ver" onclick="abrirOficina('comunicacao')">Jogar / Interagir</button>
+                </div>
+            </div>
+
+            <!-- 4. Oficina de Jogos -->
+            <div class="card" data-cat="jogo">
+                <div class="card-top">🧩</div>
+                <div class="card-body">
+                    <span class="card-tag">Jogos</span>
+                    <h3>4. Oficina de Jogos</h3>
+                    <p>Prática estruturada de turnos, regras claras e previsibilidade lógica com companheiro digital inclusivo.</p>
+                </div>
+                <div class="card-footer">
+                    <div class="card-meta"><span>⏱ Raciocínio</span></div>
+                    <button class="btn-ver" onclick="abrirOficina('jogos')">Jogar / Interagir</button>
+                </div>
+            </div>
+
+            <!-- 5. Oficinas Motoras -->
+            <div class="card" data-cat="motor">
+                <div class="card-top">🏃‍♂️</div>
+                <div class="card-body">
+                    <span class="card-tag">Motoras</span>
+                    <h3>5. Oficinas Motoras</h3>
+                    <p>Exercícios de ritmo, tempo de reação e coordenação motora grossa adaptada por meio de guias visuais.</p>
+                </div>
+                <div class="card-footer">
+                    <div class="card-meta"><span>⏱ Psicomotora</span></div>
+                    <button class="btn-ver" onclick="abrirOficina('motoras')">Jogar / Interagir</button>
+                </div>
+            </div>
+
+            <!-- 6. Prancha de Comunicação com Pictogramas -->
+            <div class="card" data-cat="comunicacao">
+                <div class="card-top">📇</div>
+                <div class="card-body">
+                    <span class="card-tag">Comunicação</span>
+                    <h3>6. Prancha de Pictogramas</h3>
+                    <p>Sistema de Comunicação Alternativa e Aumentativa (CAA) interativo baseado em princípios PECS.</p>
+                </div>
+                <div class="card-footer">
+                    <div class="card-meta"><span>⏱ Autonomia</span></div>
+                    <button class="btn-ver" onclick="abrirOficina('prancha')">Jogar / Interagir</button>
+                </div>
+            </div>
+
+            <!-- 7. Podcast da Inclusão -->
+            <div class="card" data-cat="comunicacao">
+                <div class="card-top">🎙️</div>
+                <div class="card-body">
+                    <span class="card-tag">Comunicação</span>
+                    <h3>7. Podcast da Inclusão</h3>
+                    <p>Estúdio simulador de mixagem sonora e expressão de ideias sobre neurodiversidade e empatia.</p>
+                </div>
+                <div class="card-footer">
+                    <div class="card-meta"><span>⏱ Expressão</span></div>
+                    <button class="btn-ver" onclick="abrirOficina('podcast')">Jogar / Interagir</button>
+                </div>
+            </div>
+
+            <!-- 8. Caixa das Texturas -->
+            <div class="card" data-cat="sensorial">
+                <div class="card-top">📦</div>
+                <div class="card-body">
+                    <span class="card-tag">Sensorial</span>
+                    <h3>8. Caixa das Texturas</h3>
+                    <p>Exploração e dessensibilização tátil guiada de forma controlada e segura para hipo/hipersensibilidade.</p>
+                </div>
+                <div class="card-footer">
+                    <div class="card-meta"><span>⏱ Tátil</span></div>
+                    <button class="btn-ver" onclick="abrirOficina('texturas')">Jogar / Interagir</button>
+                </div>
+            </div>
+
+            <!-- 9. Instrumentos de Sopro e Percussão -->
+            <div class="card" data-cat="sensorial">
+                <div class="card-top">🥁</div>
+                <div class="card-body">
+                    <span class="card-tag">Sensorial</span>
+                    <h3>9. Instrumentos / Som</h3>
+                    <p>Exploração sonora rítmica auxiliando no controle da respiração e coordenação orofacial e motora.</p>
+                </div>
+                <div class="card-footer">
+                    <div class="card-meta"><span>⏱ Ritmo</span></div>
+                    <button class="btn-ver" onclick="abrirOficina('instrumentos')">Jogar / Interagir</button>
+                </div>
+            </div>
+
+            <!-- 10. Jardim dos Aromas -->
+            <div class="card" data-cat="sensorial">
+                <div class="card-top">🌿</div>
+                <div class="card-body">
+                    <span class="card-tag">Sensorial</span>
+                    <h3>10. Jardim dos Aromas</h3>
+                    <p>Estimulação olfativa calmante integrada a ambientes relaxantes e cromoterapia botânica digital.</p>
+                </div>
+                <div class="card-footer">
+                    <div class="card-meta"><span>⏱ Bem-Estar</span></div>
+                    <button class="btn-ver" onclick="abrirOficina('jardim')">Jogar / Interagir</button>
+                </div>
+            </div>
+
+            <!-- 11. Pintura com Técnicas Adaptadas -->
+            <div class="card" data-cat="visual">
+                <div class="card-top">🖌️</div>
+                <div class="card-body">
+                    <span class="card-tag">Visual</span>
+                    <h3>11. Pintura Adaptada</h3>
+                    <p>Expressão não verbal criativa por meio de painel de desenho assistido e acessível com macros simplificadas.</p>
+                </div>
+                <div class="card-footer">
+                    <div class="card-meta"><span>⏱ Artes</span></div>
+                    <button class="btn-ver" onclick="abrirOficina('pintura')">Jogar / Interagir</button>
+                </div>
+            </div>
+
+            <!-- 12. Leitura em Braille -->
+            <div class="card" data-cat="visual">
+                <div class="card-top">⠃</div>
+                <div class="card-body">
+                    <span class="card-tag">Visual</span>
+                    <h3>12. Leitura em Braille</h3>
+                    <p>Introdução lúdica ao sistema de células de 6 pontos, decodificando e expandindo vias táteis-cognitivas.</p>
+                </div>
+                <div class="card-footer">
+                    <div class="card-meta"><span>⏱ Cognição</span></div>
+                    <button class="btn-ver" onclick="abrirOficina('braille')">Jogar / Interagir</button>
+                </div>
+            </div>
+
+            <!-- 13. Livros Acessíveis com Libras -->
+            <div class="card" data-cat="comunicacao">
+                <div class="card-top">📖</div>
+                <div class="card-body">
+                    <span class="card-tag">Comunicação</span>
+                    <h3>13. Livros com Libras</h3>
+                    <p>Letramento inclusivo multimodal associando histórias a representações gestuais e visuais da Libras.</p>
+                </div>
+                <div class="card-footer">
+                    <div class="card-meta"><span>⏱ Inclusão</span></div>
+                    <button class="btn-ver" onclick="abrirOficina('libras')">Jogar / Interagir</button>
+                </div>
+            </div>
+
+            <!-- 14. Quebra-Cabeça Colaborativo Gigante -->
+            <div class="card" data-cat="jogo">
+                <div class="card-top">🧩</div>
+                <div class="card-body">
+                    <span class="card-tag">Jogos</span>
+                    <h3>14. Quebra-Cabeça Gigante</h3>
+                    <p>Montagem colaborativa para desenvolver percepção visual, espacial e celebração conjunta de metas.</p>
+                </div>
+                <div class="card-footer">
+                    <div class="card-meta"><span>⏱ Cooperação</span></div>
+                    <button class="btn-ver" onclick="abrirOficina('quebracabeca')">Jogar / Interagir</button>
+                </div>
+            </div>
+
+            <!-- 15. Boliche Adaptado – Educação Física Inclusiva -->
+            <div class="card" data-cat="motor">
+                <div class="card-top">🎳</div>
+                <div class="card-body">
+                    <span class="card-tag">Motoras</span>
+                    <h3>15. Boliche Adaptado</h3>
+                    <p>Simulador de arremesso adaptado com controle de força e estabilização para autoconfiança motora.</p>
+                </div>
+                <div class="card-footer">
+                    <div class="card-meta"><span>⏱ Esporte</span></div>
+                    <button class="btn-ver" onclick="abrirOficina('boliche')">Jogar / Interagir</button>
+                </div>
+            </div>
+
+            <!-- 16. Memória das Emoções com Pictogramas -->
+            <div class="card" data-cat="jogo">
+                <div class="card-top">🧠</div>
+                <div class="card-body">
+                    <span class="card-tag">Jogos</span>
+                    <h3>16. Memória das Emoções</h3>
+                    <p>Associação de expressões faciais e sentimentos para o desenvolvimento da inteligência emocional.</p>
+                </div>
+                <div class="card-footer">
+                    <div class="card-meta"><span>⏱ Empatia</span></div>
+                    <button class="btn-ver" onclick="abrirOficina('memoria')">Jogar / Interagir</button>
+                </div>
+            </div>
+
+            <!-- 17. Circuito Psicomotor Inclusivo -->
+            <div class="card" data-cat="motor">
+                <div class="card-top">🔲</div>
+                <div class="card-body">
+                    <span class="card-tag">Motoras</span>
+                    <h3>17. Circuito Psicomotor</h3>
+                    <p>Percurso de estações sequenciais desafiando o planejamento motor e consciência corporal de forma segura.</p>
+                </div>
+                <div class="card-footer">
+                    <div class="card-meta"><span>⏱ Integração</span></div>
+                    <button class="btn-ver" onclick="abrirOficina('circuito')">Jogar / Interagir</button>
+                </div>
+            </div>
+
+            <!-- 18. Escrita Funcional com Apoio de Tecnologia -->
+            <div class="card" data-cat="comunicacao">
+                <div class="card-top">💻</div>
+                <div class="card-body">
+                    <span class="card-tag">Comunicação</span>
+                    <h3>18. Escrita Funcional</h3>
+                    <p>Editor de texto adaptado com chips preditivos de palavras e feedback visual focado na alfabetização funcional.</p>
+                </div>
+                <div class="card-footer">
+                    <div class="card-meta"><span>⏱ Assistiva</span></div>
+                    <button class="btn-ver" onclick="abrirOficina('escrita')">Jogar / Interagir</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- UNIFIED MODAL SYSTEM -->
+    <div id="modalOficina" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="fecharModal()">&times;</span>
+            <div id="modalHeaderArea" class="modal-header-info"></div>
+            <div id="modalFundamentacao" class="modal-fundamentacao"></div>
+            <div id="modalGameArea" class="game-container"></div>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 NexaPlus. Desenvolvido para a inclusão plena e valorização da <strong>Neurodiversidade</strong>.</p>
+    </footer>
+
+    <script>
+        // Filtering Logic
+        function filtrar(btn, categoria) {
+            document.querySelectorAll('.filtro').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.card').forEach(card => {
+                if (categoria === 'todos' || card.getAttribute('data-cat') === categoria) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Modal Management
+        const modal = document.getElementById('modalOficina');
         
-        <a href="fotojornal.html" class="btn-ver" style="text-decoration:none; text-align:center;">Ver atividade</a>
-      </div>
-    </div>
+        function fecharModal() {
+            modal.style.display = 'none';
+            document.getElementById('modalGameArea').innerHTML = '';
+        }
 
-    <div class="card" data-cat="comunicacao">
-      <div class="card-top" style="background:#f3DF9A">🎤</div>
-      <div class="card-body">
-        <span class="card-tag">Comunicação · Áudio</span>
-        <h3>Podcast da Inclusão</h3>
-        <p>Alunos gravam áudios curtos contando uma história, um desejo ou um aprendizado. Ferramenta acessível para quem prefere se expressar oralmente.</p>
-      </div>
-      <div class="card-footer">
-        <div class="card-meta"><span>📅 Ontem</span><span>⏱ 20min</span></div>
-        <a href="podcastinclusao.html" class="btn-ver" style="text-decoration:none; text-align:center;">Ver atividade</a>
-      </div>
-    </div>
-  </div>
+        // Workshop Data & Specific Simulators
+        const oficinasData = {
+            'sensorial': {
+                title: "1. Oficina Sensorial",
+                fund: "<strong>Fundamentação:</strong> A integração multissensorial ajuda na regulação emocional de indivíduos com TEA [1]. Frequências sonoras senoidais puras e cores auxiliam na organização cortical de estímulos ambientais.",
+                render: () => `
+                    <p style="margin-bottom: 12px; text-align:center;">Clique nos botões sensoriais para emitir notas harmônicas puras e mudar a atmosfera de cor estimulante.</p>
+                    <div style="display:flex; gap:15px; margin-top:10px;">
+                        <button class="game-btn" style="background:#cd9699;" onclick="playTone(261.63, '#cd9699')">Som Calmo 1 (C4)</button>
+                        <button class="game-btn" style="background:#b6dcc7;" onclick="playTone(329.63, '#b6dcc7')">Som Calmo 2 (E4)</button>
+                        <button class="game-btn" style="background:#bbabd7;" onclick="playTone(392.00, '#392.00')">Som Calmo 3 (G4)</button>
+                    </div>
+                    <div id="sensoryBox" style="width:100%; height:80px; border-radius:12px; margin-top:20px; transition:background 0.5s; background:rgba(255,255,255,0.05); display:flex; align-items:center; justify-content:center; font-weight:bold;">Zona de Eco Visual</div>
+                `
+            },
+            'visual': {
+                title: "2. Oficina Visual",
+                fund: "<strong>Fundamentação:</strong> Cartões visuais fornecem previsibilidade estruturada amplamente utilizada na Análise do Comportamento Aplicada (ABA) [4], atenuando crises de transição escolar.",
+                render: () => `
+                    <p style="margin-bottom:12px;">Ordene as atividades cronologicamente clicando nelas (da primeira à última):</p>
+                    <div id="sortContainer" class="sort-list">
+                        <div class="sort-item" onclick="checkSort(1, this)">🌅 Tomar Café da Manhã</div>
+                        <div class="sort-item" onclick="checkSort(0, this)">🛏️ Acordar e Organizar o Quarto</div>
+                        <div class="sort-item" onclick="checkSort(2, this)">🎒 Ir para a Escola</div>
+                    </div>
+                    <div id="sortStatus" style="margin-top:15px; font-weight:bold; color:var(--mint);"></div>
+                `
+            },
+            'comunicacao': {
+                title: "3. Oficina de Comunicação",
+                fund: "<strong>Fundamentação:</strong> Atividades de dramatização orientadas expandem habilidades pragmáticas de escuta ativa e empatia socioemocional [5].",
+                render: () => `
+                    <p style="margin-bottom:15px;"><strong>Cenário:</strong> Um colega está sobrecarregado pelo barulho do pátio. Qual é a melhor atitude inclusiva?</p>
+                    <div style="display:flex; flex-direction:column; gap:10px; width:100%;">
+                        <button class="quiz-option" onclick="alert('Excelente escolha! Oferecer previsibilidade e um local acolhedor acalma o sistema nervoso.')">A) Oferecer fones de ouvido redutores e acompanhá-lo até uma sala silenciosa.</button>
+                        <button class="quiz-option" onclick="alert('Tente novamente. Insistir para continuar no barulho pode causar desregulação emocional profunda.')">B) Dizer para ele ignorar o barulho e continuar a brincar normalmente.</button>
+                    </div>
+                `
+            },
+            'jogos': {
+                title: "4. Oficina de Jogos (Jogo da Velha Inclusivo)",
+                fund: "<strong>Fundamentação:</strong> Jogos com regras ultra-claras e turnos previsíveis diminuem a carga cognitiva e desenvolvem o respeito social [6].",
+                render: () => `
+                    <div style="display:grid; grid-template-columns: repeat(3, 60px); gap:8px; margin: 10px auto;" id="ticGrid">
+                        ${Array(9).fill(0).map((_,i)=>`<button style="width:60px; height:60px; font-size:24px; background:var(--surface); border:1px solid var(--border2); color:white; cursor:pointer;" onclick="playTic(${i}, this)"></button>`).join('')}
+                    </div>
+                    <p id="ticStatus" style="font-weight:bold; color:var(--cream);"></p>
+                `
+            },
+            'motoras': {
+                title: "5. Oficinas Motoras (Treino de Ritmo e Precisão)",
+                fund: "<strong>Fundamentação:</strong> Circuitos psicomotores ritmados estimulam a propriocepção, lateralidade e regulação atencional [7].",
+                render: () => `
+                    <p>Pressione o botão exatamente quando a barra oscilante estiver na zona verde (centro)!</p>
+                    <div class="bowling-lane" style="margin:15px 0;">
+                        <div id="motorIndicator" style="width:16px; height:100%; background:var(--rose); position:absolute; left:0;"></div>
+                        <div style="width:40px; height:100%; background:var(--mint); margin:0 auto; opacity:0.4;"></div>
+                    </div>
+                    <button class="game-btn" onclick="hitMotorTarget()">Marcar Ritmo</button>
+                    <p id="motorScore" style="margin-top:10px; font-weight:bold;"></p>
+                `
+            },
+            'prancha': {
+                title: "6. Prancha de Comunicação Interativa (CAA)",
+                fund: "<strong>Fundamentação:</strong> Baseado no PECS [5]. Permite que alunos não verbais expressem desejos imediatos com autonomia, mitigando crises por frustração comunicativa.",
+                render: () => `
+                    <div class="aac-bar" id="aacSpeechBar"><span style="color:var(--muted)">Construa sua frase: </span></div>
+                    <div style="margin-top:10px; display:flex; gap:10px;"><button class="game-btn" onclick="clearAac()">Limpar</button><button class="game-btn" style="background:var(--lavender);" onclick="speakAac()">Falar / Mostrar</button></div>
+                    <div class="aac-grid" style="margin-top:20px;">
+                        <div class="aac-card" onclick="addAac('Eu quero', '✋')"><div class="aac-icon">✋</div><div class="aac-word">Eu quero</div></div>
+                        <div class="aac-card" onclick="addAac('Água', '💧')"><div class="aac-icon">💧</div><div class="aac-word">Água</div></div>
+                        <div class="aac-card" onclick="addAac('Comer', '🍎')"><div class="aac-icon">🍎</div><div class="aac-word">Comer</div></div>
+                        <div class="aac-card" onclick="addAac('Banheiro', '🚽')"><div class="aac-icon">🚽</div><div class="aac-word">Banheiro</div></div>
+                        <div class="aac-card" onclick="addAac('Estou Feliz', '😊')"><div class="aac-icon">😊</div><div class="aac-word">Feliz</div></div>
+                        <div class="aac-card" onclick="addAac('Ajuda', '🆘')"><div class="aac-icon">🆘</div><div class="aac-word">Ajuda</div></div>
+                        <div class="aac-card" onclick="addAac('Brincar', '🧸')"><div class="aac-icon">🧸</div><div class="aac-word">Brincar</div></div>
+                        <div class="aac-card" onclick="addAac('Descansar', '🛏️')"><div class="aac-icon">🛏️</div><div class="aac-word">Descansar</div></div>
+                    </div>
+                `
+            },
+            'podcast': {
+                title: "7. Podcast da Inclusão (Mesa de Mixagem)",
+                fund: "<strong>Fundamentação:</strong> Promove o protagonismo estudantil, autoaceitação e estruturação de pensamento verbal compartilhado [9].",
+                render: () => `
+                    <p style="margin-bottom:15px;">Simule a gravação ativando as faixas do estúdio de inclusão:</p>
+                    <div style="display:flex; flex-direction:column; gap:12px; width:100%;">
+                        <div class="track-control"><span>🎵 Trilha Sonora de Fundo (Relaxante)</span><button class="game-btn" style="padding:6px 12px;" onclick="toggleTrackSim(this)">Ligar</button></div>
+                        <div class="track-control"><span>🎙️ Microfone Principal - Relato do Aluno</span><button class="game-btn" style="padding:6px 12px;" onclick="toggleTrackSim(this)">Ligar</button></div>
+                        <div class="track-control"><span>🔊 Efeito: Palmas Coletivas Inclusivas</span><button class="game-btn" style="padding:6px 12px;" onclick="toggleTrackSim(this)">Ligar</button></div>
+                    </div>
+                `
+            },
+            'texturas': {
+                title: "8. Caixa das Texturas",
+                fund: "<strong>Fundamentação:</strong> Estimula caminhos somatossensoriais vitais para regulação fina e modulação de hipo ou hipersensibilidade tátil [2].",
+                render: () => `
+                    <p style="margin-bottom:12px;">Passe o cursor ou toque na caixa para explorar e identificar texturas reguladoras simuladas:</p>
+                    <div class="texture-box" style="background:linear-gradient(45deg, #3a3a42 25%, #2d2d35 25%); background-size:20px 20px;" onmousemove="revealTexture('Áspero / Rugoso (Ex: Tapete Sensorial)')">Explorar Lado A</div>
+                    <div class="texture-box" style="background:radial-gradient(circle, #4e4e59 10%, transparent 11%); background-size:15px 15px; margin-top:12px;" onmousemove="revealTexture('Macio / Ondulado (Ex: Plástico Bolha / Algodão)')">Explorar Lado B</div>
+                    <p id="textureFeedback" style="margin-top:10px; font-weight:bold; color:var(--cream); text-align:center;"></p>
+                `
+            },
+            'instrumentos': {
+                title: "9. Instrumentos de Sopro e Percussão",
+                fund: "<strong>Fundamentação:</strong> Estimula o córtex auditivo, o controle respiratório diafragmático e o fortalecimento motor orofacial [10].",
+                render: () => `
+                    <p style="margin-bottom:12px;">Clique nas barras do Metalofone Adaptado para produzir acordes harmônicos limpos:</p>
+                    <div class="xylo-container">
+                        <div class="xylo-key" style="background:#cd9699;" onclick="playTone(261.63)">C</div>
+                        <div class="xylo-key" style="background:#f3df9a;" onclick="playTone(293.66)">D</div>
+                        <div class="xylo-key" style="background:#b6dcc7;" onclick="playTone(329.63)">E</div>
+                        <div class="xylo-key" style="background:#bbabd7;" onclick="playTone(349.23)">F</div>
+                        <div class="xylo-key" style="background:#white; background:var(--text);" onclick="playTone(392.00)">G</div>
+                    </div>
+                `
+            },
+            'jardim': {
+                title: "10. Jardim dos Aromas",
+                fund: "<strong>Fundamentação:</strong> A hortoterapia e a aromaterapia regulam o estresse de forma imediata por meio de estímulos olfativos corticais puros [12].",
+                render: () => `
+                    <p>Escolha uma essência botânica do nosso jardim para acalmar a iluminação ambiental da sala:</p>
+                    <div style="display:flex; gap:12px; margin-top:15px;">
+                        <button class="game-btn" style="background:#bbabd7; color:#0d0d10;" onclick="triggerAroma('#2b1f3d', 'Aroma Alfazema/Lavanda ativado - Foco em Relaxamento Profundo e Sono Autoregulador.')">🌿 Lavanda</button>
+                        <button class="game-btn" style="background:#b6dcc7; color:#0d0d10;" onclick="triggerAroma('#142d20', 'Aroma Alecrim ativado - Foco em Estimulação Cognitiva e Memória.')">🌱 Alecrim</button>
+                        <button class="game-btn" style="background:#f3df9a; color:#0d0d10;" onclick="triggerAroma('#383119', 'Aroma Camomila ativado - Redução instantânea de hiperatividade.')">🌼 Camomila</button>
+                    </div>
+                    <p id="aromaStatus" style="margin-top:20px; font-style:italic; font-size:0.9rem; text-align:center;"></p>
+                `
+            },
+            'pintura': {
+                title: "11. Pintura com Técnicas Adaptadas",
+                fund: "<strong>Fundamentação:</strong> A pintura assistida com ferramentas simplificadas permite a autoexpressão livre, estimulando o planejamento motor adaptado sem frustrações [13].",
+                render: () => `
+                    <p style="margin-bottom:10px;">Arraste no quadro branco para desenhar livremente com pincel anatômico grosso:</p>
+                    <canvas id="paintCanvas" class="canvas-paint" width="400" height="150" style="background:white;"></canvas>
+                    <div style="margin-top:10px;"><button class="game-btn" onclick="clearCanvas()">Limpar Tela</button></div>
+                `
+            },
+            'braille': {
+                title: "12. Introdução Cognitiva ao Braille",
+                fund: "<strong>Fundamentação:</strong> O mapeamento tátil por pontos estimula a plasticidade somatossensorial e a decodificação abstrata da linguagem [14].",
+                render: () => `
+                    <p style="margin-bottom:12px;">Clique nos pontos para alternar a célula de 6 pontos e formar caracteres táteis:</p>
+                    <div style="display:flex; justify-content:center; gap:30px; align-items:center;">
+                        <div class="braille-grid">
+                            <div class="braille-dot" onclick="this.classList.toggle('active'); updateBraille();"></div>
+                            <div class="braille-dot" onclick="this.classList.toggle('active'); updateBraille();"></div>
+                            <div class="braille-dot" onclick="this.classList.toggle('active'); updateBraille();"></div>
+                            <div class="braille-dot" onclick="this.classList.toggle('active'); updateBraille();"></div>
+                            <div class="braille-dot" onclick="this.classList.toggle('active'); updateBraille();"></div>
+                            <div class="braille-dot" onclick="this.classList.toggle('active'); updateBraille();"></div>
+                        </div>
+                        <div style="font-size:1.2rem;">Letra Correspondente: <strong id="brailleLetter" style="color:var(--mint);">A</strong></div>
+                    </div>
+                `
+            },
+            'libras': {
+                title: "13. Livros Acessíveis com Libras",
+                fund: "<strong>Fundamentação:</strong> Letramento multimodal integrado com canais visuo-espaciais melhora a retenção vocabular em alunos surdos e ouvintes neurodiversos [15].",
+                render: () => `
+                    <p><strong>História:</strong> "O Sol brilha alegremente para todos no horizonte."</p>
+                    <div style="margin-top:15px; padding:16px; background:var(--surface); border-radius:12px; border:1px dashed var(--mint); text-align:center;">
+                        <span style="font-size:36px; display:block; margin-bottom:8px;">☀️ 🧏‍♂️ 🌲</span>
+                        <p style="font-size:0.85rem; color:var(--muted);">[Sinalizador Simulado: Configuração de mão em círculo abrindo os dedos simulando os raios de sol, seguido pelo sinal de Felicidade e Comunidade]</p>
+                    </div>
+                `
+            },
+            'quebracabeca': {
+                title: "14. Quebra-Cabeça Colaborativo do Infinito",
+                fund: "<strong>Fundamentação:</strong> O encaixe espacial compartilhado desenvolve estratégias de resolução de problemas e regulação social focada [16].",
+                render: () => `
+                    <p style="margin-bottom:12px;">Clique nas partes do quebra-cabeça para rotacioná-las até que todas fiquem alinhadas (0 graus):</p>
+                    <div style="display:flex; gap:15px; justify-content:center;" id="puzzleBox">
+                        <div style="width:70px; height:70px; background:var(--lavender); color:#0d0d10; font-weight:bold; display:flex; align-items:center; justify-content:center; transform:rotate(90deg); cursor:pointer; border-radius:8px;" onclick="rotatePiece(this)">Parte 1</div>
+                        <div style="width:70px; height:70px; background:var(--mint); color:#0d0d10; font-weight:bold; display:flex; align-items:center; justify-content:center; transform:rotate(180deg); cursor:pointer; border-radius:8px;" onclick="rotatePiece(this)">Parte 2</div>
+                        <div style="width:70px; height:70px; background:var(--cream); color:#0d0d10; font-weight:bold; display:flex; align-items:center; justify-content:center; transform:rotate(270deg); cursor:pointer; border-radius:8px;" onclick="rotatePiece(this)">Parte 3</div>
+                    </div>
+                    <p id="puzzleStatus" style="margin-top:15px; text-align:center; font-weight:bold; color:var(--mint);"></p>
+                `
+            },
+            'boliche': {
+                title: "15. Boliche Adaptado (Educação Física Inclusiva)",
+                fund: "<strong>Fundamentação:</strong> O boliche adaptado calibra coordenação motora grossa, foco visuo-motor e fortalece o senso de competência e autoestima individual [8].",
+                render: () => `
+                    <p>Calibre a mira e lance a bola adaptada leve:</p>
+                    <div class="bowling-lane" style="margin:15px 0;">
+                        <div id="bowlingAim" style="width:20px; height:100%; background:var(--mint); position:absolute; left:0;"></div>
+                    </div>
+                    <button class="game-btn" onclick="launchBowl()">Lançar Bola 🎳</button>
+                    <div class="bowling-pin-area" id="pinArea" style="margin-top:15px; text-align:center;">🎳 🎳 🎳 🎳</div>
+                `
+            },
+            'memoria': {
+                title: "16. Memória das Emoções com Pictogramas",
+                fund: "<strong>Fundamentação:</strong> Associar expressões fisionômicas a descritores emocionais ampara o desenvolvimento da cognição social e empatia pragmática [19].",
+                render: () => `
+                    <p style="margin-bottom:12px;">Encontre os pares correspondentes de expressões socioemocionais:</p>
+                    <div class="memory-grid" id="memoGrid"></div>
+                `
+            },
+            'circuito': {
+                title: "17. Circuito Psicomotor Inclusivo Virtual",
+                fund: "<strong>Fundamentação:</strong> Percursos estruturados ordenam o planejamento neuromotor e refinam o processamento vestibular [7].",
+                render: () => `
+                    <p>Guie o avatar através das estações sensoriais clicando no botão de passo:</p>
+                    <div style="width:100%; background:var(--surface); border:1px solid var(--border2); height:24px; border-radius:12px; position:relative; overflow:hidden;">
+                        <div id="circuitoProgress" style="width:10%; height:100%; background:linear-gradient(90deg, var(--mint), var(--lavender)); transition:width 0.3s;"></div>
+                    </div>
+                    <div style="margin-top:10px; font-size:0.9rem;" id="circuitoDesc">Estação Atual: 🏁 Largada - Tapete Macio</div>
+                    <button class="game-btn" style="margin-top:10px;" onclick="advanceCircuito()">Dar um Passo Adaptado</button>
+                `
+            },
+            'escrita': {
+                title: "18. Escrita Funcional com Apoio de Tecnologia Assistiva",
+                fund: "<strong>Fundamentação:</strong> A predição vocabular simplificada reduz a fadiga motora e instrumentaliza o aluno na escrita autônoma prática do cotidiano [20].",
+                render: () => `
+                    <p style="margin-bottom:10px;">Monte sua lista de compras do dia a dia utilizando as palavras preditivas inteligentes:</p>
+                    <textarea id="functionalTextarea" style="width:100%; height:80px; background:var(--surface); border:1px solid var(--border2); border-radius:12px; padding:12px; color:white; font-family:sans-serif;" placeholder="Sua lista aparecerá aqui..."></textarea>
+                    <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
+                        <button class="game-btn" style="padding:6px 12px; font-size:0.8rem;" onclick="insertWord('🥛 Leite ')">🥛 Leite</button>
+                        <button class="game-btn" style="padding:6px 12px; font-size:0.8rem;" onclick="insertWord('🍞 Pão ')">🍞 Pão</button>
+                        <button class="game-btn" style="padding:6px 12px; font-size:0.8rem;" onclick="insertWord('🍎 Maçã ')">🍎 Maçã</button>
+                        <button class="game-btn" style="padding:6px 12px; font-size:0.8rem;" onclick="insertWord('🥚 Ovos ')">🥚 Ovos</button>
+                    </div>
+                `
+            }
+        };
 
-  <div class="section-title">Atividades Sensoriais</div>
-  <div class="cards-grid">
-    <div class="card" data-cat="sensorial">
-      <div class="card-top" style="background:#bbabd7">🤲</div>
-      <div class="card-body">
-        <span class="card-tag">Sensorial · Tátil</span>
-        <h3>Caixa das Texturas</h3>
-        <p>Explore diferentes materiais (areia, algodão, lixa, veludo) para estimular o tato e trabalhar regulação sensorial. Excelente para TEA e outras neurodivergências.</p>
-      </div>
-      <div class="card-footer">
-        <div class="card-meta"><span>📅 Hoje</span><span>⏱ 25min</span></div>
-        <button class="btn-ver">Ver atividade</button>
-      </div>
-    </div>
+        function abrirOficina(key) {
+            const data = oficinasData[key];
+            if (!data) return;
+            
+            document.getElementById('modalHeaderArea').innerHTML = `<h2>${data.title}</h2>`;
+            document.getElementById('modalFundamentacao').innerHTML = data.fund;
+            document.getElementById('modalGameArea').innerHTML = data.render();
+            
+            modal.style.display = 'block';
+            
+            // Post-render configurations for loops/intervals
+            if (key === 'motoras') initMotorGame();
+            if (key === 'boliche') initBowlingGame();
+            if (key === 'memoria') initMemoryGame();
+            if (key === 'pintura') initPaintCanvas();
+        }
 
-    <div class="card" data-cat="sensorial">
-      <div class="card-top" style="background:#bbabd7">🎵</div>
-      <div class="card-body">
-        <span class="card-tag">Sensorial · Auditivo</span>
-        <h3>Instrumentos de Sopro e Percussão </h3>
-        <p>Crie instrumentos simples com materiais recicláveis. Explore ritmos e sons para desenvolver coordenação, atenção e expressão musical de forma inclusiva.</p>
-      </div>
-      <div class="card-footer">
-        <div class="card-meta"><span>📅 Hoje</span><span>⏱ 40min</span></div>
-        <button class="btn-ver">Ver atividade</button>
-      </div>
-    </div>
+        // Web Audio Synthesizer for Pure Harmonics
+        let audioCtx = null;
+        function playTone(freq, colorChange) {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.6);
 
-    <div class="card" data-cat="sensorial">
-      <div class="card-top" style="background:#bbabd7">🧁</div>
-      <div class="card-body">
-        <span class="card-tag">Sensorial · Olfato</span>
-        <h3>Jardim dos Aromas</h3>
-        <p>Identificação de plantas aromáticas, essências e especiarias. Estimula o olfato e cria memórias afetivas ligadas ao aprendizado.</p>
-      </div>
-      <div class="card-footer">
-        <div class="card-meta"><span>📅 Ontem</span><span>⏱ 30min</span></div>
-        <button class="btn-ver">Ver atividade</button>
-      </div>
-    </div>
-  </div>
+            if (colorChange) {
+                const box = document.getElementById('sensoryBox');
+                if (box) {
+                    box.style.background = colorChange;
+                    box.style.color = '#0d0d10';
+                }
+            }
+        }
 
-  <div class="section-title"> Atividades Visuais</div>
-  <div class="cards-grid">
-    <div class="card" data-cat="visual">
-      <div class="card-top" style="background:#b6dcc7">🎨</div>
-      <div class="card-body">
-        <span class="card-tag">Visual · Arte</span>
-        <h3>Pintura com Técnicas Adaptadas</h3>
-        <p>Pintura com esponjas, rolos e pincéis de diferentes espessuras. Técnicas acessíveis para alunos com mobilidade reduzida ou dificuldades motoras finas.</p>
-      </div>
-      <div class="card-footer">
-        <div class="card-meta"><span>📅 Hoje</span><span>⏱ 35min</span></div>
-        <button class="btn-ver">Ver atividade</button>
-      </div>
-    </div>
+        // Visual workshop matching
+        let currentVisualStep = 0;
+        function checkSort(expected, elem) {
+            if (expected === currentVisualStep) {
+                elem.style.borderColor = "var(--mint)";
+                elem.style.background = "rgba(183,221,200,0.1)";
+                currentVisualStep++;
+                if (currentVisualStep === 3) {
+                    document.getElementById('sortStatus').innerText = "✓ Sequência perfeita concluída! Excelente previsibilidade.";
+                }
+            } else {
+                document.getElementById('sortStatus').innerText = "Tente outra ordem para estruturar o dia com sucesso.";
+                setTimeout(() => { document.getElementById('sortStatus').innerText = ""; }, 2000);
+            }
+        }
 
-    <div class="card" data-cat="visual">
-      <div class="card-top" style="background:#b6dcc7">🔠</div>
-      <div class="card-body">
-        <span class="card-tag">Visual · Leitura</span>
-        <h3>Leitura em Braille – Introdução</h3>
-        <p>Atividade introdutória ao sistema Braille com materiais táteis. Promove empatia e inclusão, permitindo que toda a turma experiencie a leitura tátil.</p>
-      </div>
-      <div class="card-footer">
-        <div class="card-meta"><span>📅 Hoje</span><span>⏱ 50min</span></div>
-        <button class="btn-ver">Ver atividade</button>
-      </div>
-    </div>
+        // Tic Tac Toe Inclusivo
+        let ticBoard = Array(9).fill('');
+        function playTic(idx, btn) {
+            if (ticBoard[idx] !== '') return;
+            ticBoard[idx] = 'O';
+            btn.innerText = 'O';
+            btn.style.color = 'var(--mint)';
+            if (checkTicWin('O')) {
+                document.getElementById('ticStatus').innerText = "Parabéns! Você venceu de forma colaborativa 🎉";
+                return;
+            }
+            // Simple bot auto move
+            let emptyIdxs = ticBoard.map((v,i) => v==='' ? i : null).filter(v => v!==null);
+            if (emptyIdxs.length > 0) {
+                let botChoice = emptyIdxs[Math.floor(Math.random() * emptyIdxs.length)];
+                ticBoard[botChoice] = 'X';
+                const buttons = document.getElementById('ticGrid').getElementsByTagName('button');
+                buttons[botChoice].innerText = 'X';
+                buttons[botChoice].style.color = 'var(--rose)';
+                if (checkTicWin('X')) {
+                    document.getElementById('ticStatus').innerText = "O parceiro digital completou a trilha. Vamos tentar juntos!";
+                }
+            }
+        }
+        function checkTicWin(p) {
+            const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+            return wins.some(w => w.every(i => ticBoard[i] === p));
+        }
 
-    <div class="card" data-cat="visual">
-      <div class="card-top" style="background:#b6dcc7">📖</div>
-      <div class="card-body">
-        <span class="card-tag">Visual · Leitura</span>
-        <h3>Livros Acessíveis com Libras</h3>
-        <p>Leitura de histórias com tradução simultânea em Libras. Inclui QR codes para vídeos com intérpretes e versão em áudio para cada página.</p>
-      </div>
-      <div class="card-footer">
-        <div class="card-meta"><span>📅 Ontem</span><span>⏱ 40min</span></div>
-        <button class="btn-ver">Ver atividade</button>
-      </div>
-    </div>
-  </div>
+        // Motor coordination interval game
+        let motorPos = 0;
+        let motorDir = 2;
+        let motorInterval = null;
+        function initMotorGame() {
+            const ind = document.getElementById('motorIndicator');
+            motorPos = 0;
+            if (motorInterval) clearInterval(motorInterval);
+            motorInterval = setInterval(() => {
+                motorPos += motorDir;
+                if (motorPos > 92 || motorPos < 0) motorDir *= -1;
+                if (ind) ind.style.left = motorPos + '%';
+            }, 30);
+        }
+        function hitMotorTarget() {
+            clearInterval(motorInterval);
+            if (motorPos >= 38 && motorPos <= 58) {
+                document.getElementById('motorScore').innerHTML = "<span style='color:var(--mint);'>✓ Sincronia Perfeita! Excelente engajamento proprioceptivo e motor.</span>";
+            } else {
+                document.getElementById('motorScore').innerHTML = "<span style='color:var(--rose);'>Quase! O ritmo flui de forma contínua. Tente acionar novamente.</span>";
+            }
+            setTimeout(initMotorGame, 1800);
+        }
 
-  <div class="section-title"> Jogos Adaptados</div>
-  <div class="cards-grid">
-    <div class="card" data-cat="jogo">
-      <div class="card-top" style="background:#CC9699">🧩</div>
-      <div class="card-body">
-        <span class="card-tag">Jogo · Cognitivo</span>
-        <h3>Quebra-Cabeça Colaborativo Gigante</h3>
-        <p>Peças grandes e coloridas para montar em grupo. Estimula colaboração, raciocínio espacial e inclui versão adaptada para cadeirantes.</p>
-      </div>
-      <div class="card-footer">
-        <div class="card-meta"><span>📅 Hoje</span><span>⏱ 30min</span></div>
-        <button class="btn-ver">Ver atividade</button>
-      </div>
-    </div>
+        // AAC Prancha Helper
+        let aacPhrases = [];
+        function addAac(word, icon) {
+            aacPhrases.push(word);
+            document.getElementById('aacSpeechBar').innerHTML += ` <span style="background:var(--surface2); padding:4px 10px; border-radius:8px; border:1px solid var(--border2);">${icon} ${word}</span>`;
+        }
+        function clearAac() {
+            aacPhrases = [];
+            document.getElementById('aacSpeechBar').innerHTML = `<span style="color:var(--muted)">Construa sua frase: </span>`;
+        }
+        function speakAac() {
+            if (aacPhrases.length === 0) return;
+            alert("A prancha expressa: " + aacPhrases.join(" -> "));
+        }
 
-    <div class="card" data-cat="jogo">
-      <div class="card-top" style="background:#CC9699">🎯</div>
-      <div class="card-body">
-        <span class="card-tag">Jogo · Motor</span>
-        <h3>Boliche Adaptado – Educação Física Inclusiva </h3>
-        <p>Boliche com rampas e bolas de tamanhos variados. Adaptado para alunos em cadeira de rodas, com bengala ou com limitações motoras.</p>
-      </div>
-      <div class="card-footer">
-        <div class="card-meta"><span>📅 Hoje</span><span>⏱ 45min</span></div>
-        <button class="btn-ver">Ver atividade</button>
-      </div>
-    </div>
+        // Podcast Soundboard simulator
+        function toggleTrackSim(btn) {
+            if (btn.innerText === "Ligar") {
+                btn.innerText = "Desligar";
+                btn.style.background = "var(--rose)";
+            } else {
+                btn.innerText = "Ligar";
+                btn.style.background = "var(--mint)";
+            }
+        }
 
-    <div class="card" data-cat="jogo">
-      <div class="card-top" style="background:#CC9699">🃏</div>
-      <div class="card-body">
-        <span class="card-tag">Jogo · Memória</span>
-        <h3>Memória das Emoções com Pictogramas</h3>
-        <p>Jogo da memória com cartas de emoções representadas por pictogramas, fotos e palavras. Promove vocabulário emocional e empatia.</p>
-      </div>
-      <div class="card-footer">
-        <div class="card-meta"><span>📅 Ontem</span><span>⏱ 20min</span></div>
-        <button class="btn-ver">Ver atividade</button>
-      </div>
-    </div>
-  </div>
+        // Texture Box Simulator
+        function revealTexture(txt) {
+            document.getElementById('textureFeedback').innerText = "Sensação Tátil Detectada: " + txt;
+        }
 
-  <div class="section-title"> Desenvolvimento Motor</div>
-  <div class="cards-grid">
-    <div class="card" data-cat="motor">
-      <div class="card-top" style="background:#cfcfce">🤸</div>
-      <div class="card-body">
-        <span class="card-tag">Motor · Psicomotricidade</span>
-        <h3>Circuito Psicomotor Inclusivo</h3>
-        <p>Percurso com estações de equilíbrio, coordenação e lateralidade adaptadas para diferentes níveis de mobilidade. Inclui versão para cadeirantes.</p>
-      </div>
-      <div class="card-footer">
-        <div class="card-meta"><span>📅 Hoje</span><span>⏱ 50min</span></div>
-        <button class="btn-ver">Ver atividade</button>
-      </div>
-    </div>
+        // Aromas Jardim ambient color change
+        function triggerAroma(bgColor, statusText) {
+            document.getElementById('modalOficina').style.background = bgColor;
+            document.getElementById('aromaStatus').innerText = statusText;
+        }
 
-    <div class="card" data-cat="motor">
-      <div class="card-top" style="background:#cfcfce">✍️</div>
-      <div class="card-body">
-        <span class="card-tag">Motor · Escrita</span>
-        <h3>Escrita Funcional com Apoio de Tecnologia 
-        <p>Uso de engrossadores de lápis, tablets e softwares de escrita assistida. Estratégias práticas para alunos com dificuldades motoras finas na escrita.</p>
-      </div>
-      <div class="card-footer">
-        <div class="card-meta"><span>📅 Hoje</span><span>⏱ 40min</span></div>
-        <button class="btn-ver">Ver atividade</button>
-      </div>
-    </div>
-  </div>
+        // Canvas Paint anatômico adaptado
+        let painting = false;
+        let ctx = null;
+        function initPaintCanvas() {
+            const canvas = document.getElementById('paintCanvas');
+            if (!canvas) return;
+            ctx = canvas.getContext('2d');
+            ctx.strokeStyle = '#0d0d10';
+            ctx.lineWidth = 8;
+            ctx.lineCap = 'round';
+            
+            canvas.addEventListener('mousedown', (e) => { painting = true; draw(e); });
+            canvas.addEventListener('mouseup', () => { painting = false; ctx.beginPath(); });
+            canvas.addEventListener('mousemove', draw);
+        }
+        function draw(e) {
+            if (!painting || !ctx) return;
+            const canvas = document.getElementById('paintCanvas');
+            const rect = canvas.getBoundingClientRect();
+            ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+        }
+        function clearCanvas() {
+            if (ctx) ctx.clearRect(0, 0, 400, 150);
+        }
 
-</div>
+        // Braille simulation conversion logic
+        function updateBraille() {
+            const dots = document.querySelectorAll('.braille-dot');
+            let key = "";
+            dots.forEach(d => { key += d.classList.contains('active') ? "1" : "0"; });
+            
+            // Map sample combinations
+            let letter = "Customizado";
+            if (key === "100000") letter = "A";
+            if (key === "110000") letter = "B";
+            if (key === "100100") letter = "C";
+            if (key === "101000") letter = "E";
+            if (key === "000000") letter = "Vazio";
+            
+            document.getElementById('brailleLetter').innerText = letter;
+        }
 
-<footer style="text-align:center;padding:28px;font-size:0.85rem;color:#000000;border-top:2px solid #000000;background:linear-gradient(135deg, #f3de9b 0%, #bbabd7 100%);">
-  © 2025 <strong style="color:var()">Nexaplus</strong> · Saiba Mais · Inclusão que transforma vidas
-</footer>
+        // Puzzle rotate
+        function rotatePiece(elem) {
+            let currentRotation = elem.style.transform || "rotate(0deg)";
+            let deg = parseInt(currentRotation.replace(/[^0-9]/g, '')) || 0;
+            deg = (deg + 90) % 360;
+            elem.style.transform = `rotate(${deg}deg)`;
+            
+            // Validate all pieces aligned to 0
+            setTimeout(() => {
+                const pieces = document.getElementById('puzzleBox').children;
+                let win = true;
+                for (let p of pieces) {
+                    if (p.style.transform !== "rotate(0deg)" && p.style.transform !== "rotate(360deg)" && p.style.transform !== "") {
+                        win = false;
+                    }
+                }
+                if (win) {
+                    document.getElementById('puzzleStatus').innerText = "✓ Mural Concluído em Equipe! Inclusão em sintonia.";
+                }
+            }, 100);
+        }
 
-<script>
-  function filtrar(btn, cat) {
-    document.querySelectorAll('.filtro').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    document.querySelectorAll('.card[data-cat]').forEach(c => {
-      if(cat === 'todos' || c.dataset.cat === cat || c.dataset.cat.includes(cat)) {
-        c.style.display = 'flex';
-      } else {
-        c.style.display = 'none';
-      }
-    });
-  }
-</script>
+        // Bowling gauge simulator
+        let bowlAimPos = 0;
+        let bowlDir = 3;
+        let bowlInterval = null;
+        function initBowlingGame() {
+            const ind = document.getElementById('bowlingAim');
+            bowlAimPos = 0;
+            if (bowlInterval) clearInterval(bowlInterval);
+            bowlInterval = setInterval(() => {
+                bowlAimPos += bowlDir;
+                if (bowlAimPos > 95 || bowlAimPos < 0) bowlDir *= -1;
+                if (ind) ind.style.left = bowlAimPos + '%';
+            }, 25);
+        }
+        function launchBowl() {
+            clearInterval(bowlInterval);
+            if (bowlAimPos >= 40 && bowlAimPos <= 60) {
+                document.getElementById('pinArea').innerText = "💥 STRIKE! Todos os pinos derrubados com sucesso!";
+            } else {
+                document.getElementById('pinArea').innerText = "🎳 Derrubou 2 pinos laterais. Excelente esforço motor!";
+            }
+            setTimeout(initBowlingGame, 2000);
+        }
 
+        // Emotion matching game logic
+        function initMemoryGame() {
+            const grid = document.getElementById('memoGrid');
+            const items = ['😊 Feliz', '😊 Feliz', '😢 Triste', '😢 Triste', '🧘 Calmo', '🧘 Calmo', '😡 Raiva', '😡 Raiva'];
+            // Shuffle
+            items.sort(() => Math.random() - 0.5);
+            grid.innerHTML = items.map((val, i) => `
+                <div class="memory-tile" id="tile_${i}" onclick="flipTile(this, '${val}')">❓</div>
+            `).join('');
+        }
+        let firstTile = null;
+        function flipTile(elem, val) {
+            if (elem.innerText !== '❓') return;
+            elem.innerText = val;
+            elem.classList.add('flipped');
+            if (!firstTile) {
+                firstTile = elem;
+            } else {
+                if (firstTile.innerText === elem.innerText) {
+                    firstTile = null;
+                } else {
+                    let prev = firstTile;
+                    firstTile = null;
+                    setTimeout(() => {
+                        prev.innerText = '❓';
+                        elem.innerText = '❓';
+                        prev.classList.remove('flipped');
+                        elem.classList.remove('flipped');
+                    }, 1000);
+                }
+            }
+        }
+
+        // Psicomotor stepping simulator
+        let circuitoStep = 10;
+        const circuitoStations = [
+            "🏁 Largada - Passarela de Textura Macia",
+            "🟢 Estação 2 - Rastejamento Sob Arco Flexível",
+            "🟡 Estação 3 - Viga de Equilíbrio Anatômica Estabilizada",
+            "🔵 Estação 4 - Alvo de Coordenação Fina com Esferas",
+            "🏆 Chegada - Conclusão Completa do Planejamento Neuromotor!"
+        ];
+        function advanceCircuito() {
+            circuitoStep += 22;
+            if (circuitoStep > 100) circuitoStep = 10;
+            document.getElementById('circuitoProgress').style.width = circuitoStep + '%';
+            let stationIdx = Math.floor((circuitoStep / 100) * circuitoStations.length);
+            if (stationIdx >= circuitoStations.length) stationIdx = circuitoStations.length - 1;
+            document.getElementById('circuitoDesc').innerText = "Estação Atual: " + circuitoStations[stationIdx];
+        }
+
+        // Word assist chips
+        function insertWord(word) {
+            const tx = document.getElementById('functionalTextarea');
+            if (tx) tx.value += word;
+        }
+    </script>
 </body>
 </html>

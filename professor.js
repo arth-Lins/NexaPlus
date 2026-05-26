@@ -1,8 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, signInWithPopup, getRedirectResult, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 
-// ===== MESMA CONFIG DO ALUNO (projeto que funciona) =====
+// ===== CONFIGURAÇÃO DO FIREBASE =====
 const firebaseConfig = {
     apiKey: "AIzaSyD1bH3bgVXww_prqfr1-TF4rbCl4Aag2C0",
     authDomain: "eduadapt-12a2e.firebaseapp.com",
@@ -15,14 +14,17 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
-const genAI = new GoogleGenerativeAI("AIzaSyBAsPpRe8gvEfNuzzBr27w78SafBdIVbs8");
 
-// ===== ESTADO =====
-let alunoAtivo = null;
-let chatHistory = JSON.parse(localStorage.getItem('chatHistory_prof')) || [];
+const BACKEND_FUNCTION_URL = "http://127.0.0.1:5001/eduadapt-12a2e/us-central1/tutorIA";
+
+// ===== ESTADO GLOBAL MULTI-CHAT =====
+let listaConversasProf = JSON.parse(localStorage.getItem('listaConversas_prof')) || [];
+let chatIdAtivoProf = localStorage.getItem('chatIdAtivo_prof') || null;
+
 const savedNomeProf = localStorage.getItem('professorNome');
+const savedAreaProf = localStorage.getItem('professorArea');
 
-// ===== NAVEGAÇÃO (igual ao aluno) =====
+// ===== NAVEGAÇÃO ENTRE PASSO A PASSO =====
 function nextStep(num) {
     document.querySelectorAll('.step').forEach(s => {
         s.style.display = 'none';
@@ -34,61 +36,35 @@ function nextStep(num) {
     target.classList.add('active');
 }
 
-// ===== ROTEAMENTO INICIAL =====
-// Se já tem nome salvo, pula login e vai direto para os dados do aluno
-if (savedNomeProf) {
+// ===== VERIFICAÇÃO DE ROTEAMENTO INICIAL =====
+if (savedNomeProf && savedAreaProf) {
+    document.getElementById('main-container').style.display = 'none';
+    document.getElementById('dashboard-professor').style.display = 'flex';
+    inicializarHistoricoChatsProf();
+} else if (savedNomeProf) {
     const welcomeEl = document.getElementById('welcome-professor-text');
     if (welcomeEl) welcomeEl.innerText = `Bem-vindo(a), Prof. ${savedNomeProf.split(' ')[0]}!`;
-    nextStep(4);
+    nextStep(3);
 }
 
-// ===== CAPTURA REDIRECT (fallback caso popup seja bloqueado) =====
+// ===== CAPTURA RETORNO DO REDIRECT =====
 getRedirectResult(auth).then((result) => {
     const user = result?.user;
     if (!user) return;
-
-    const nome = user.displayName || "Professor";
-    localStorage.setItem('professorNome', nome);
-    localStorage.setItem('userRole', 'professor');
-
-    const welcomeEl = document.getElementById('welcome-professor-text');
-    if (welcomeEl) welcomeEl.innerText = `Bem-vindo(a), Prof. ${nome.split(' ')[0]}!`;
-
-    const temArea = localStorage.getItem('professorArea');
-    nextStep(temArea ? 4 : 3);
+    tratarLoginSucessoProf(user);
 }).catch(console.error);
 
-// ===== LOGIN COM GOOGLE (mesmo padrão do aluno) =====
+// ===== LOGIN POR POPUP (GOOGLE) =====
 async function verificarPerfilAposLogin() {
     try {
         const result = await signInWithPopup(auth, provider);
-        const user = result.user;
-        const nome = user.displayName || "Professor";
-
-        localStorage.setItem('professorNome', nome);
-        localStorage.setItem('userRole', 'professor');
-
-        const welcomeEl = document.getElementById('welcome-professor-text');
-        if (welcomeEl) welcomeEl.innerText = `Bem-vindo(a), Prof. ${nome.split(' ')[0]}!`;
-
-        const temArea = localStorage.getItem('professorArea');
-        nextStep(temArea ? 4 : 3);
-
+        if (result?.user) tratarLoginSucessoProf(result.user);
     } catch (err) {
         if (err.code === 'auth/popup-closed-by-user') return;
 
-        // Erro COOP é só aviso — verifica se login funcionou mesmo assim
         const user = auth.currentUser;
         if (user) {
-            const nome = user.displayName || "Professor";
-            localStorage.setItem('professorNome', nome);
-            localStorage.setItem('userRole', 'professor');
-
-            const welcomeEl = document.getElementById('welcome-professor-text');
-            if (welcomeEl) welcomeEl.innerText = `Bem-vindo(a), Prof. ${nome.split(' ')[0]}!`;
-
-            const temArea = localStorage.getItem('professorArea');
-            nextStep(temArea ? 4 : 3);
+            tratarLoginSucessoProf(user);
             return;
         }
 
@@ -96,112 +72,213 @@ async function verificarPerfilAposLogin() {
         alert("Erro ao conectar com o Google. Tente novamente.");
     }
 }
-// ===== FINALIZAR CADASTRO DO ALUNO =====
+
+function tratarLoginSucessoProf(user) {
+    const nome = user.displayName || "Professor";
+    localStorage.setItem('professorNome', nome);
+    localStorage.setItem('userRole', 'professor');
+
+    if (localStorage.getItem('professorArea')) {
+        document.getElementById('main-container').style.display = 'none';
+        document.getElementById('dashboard-professor').style.display = 'flex';
+        inicializarHistoricoChatsProf();
+    } else {
+        const welcomeEl = document.getElementById('welcome-professor-text');
+        if (welcomeEl) welcomeEl.innerText = `Bem-vindo(a), Prof. ${nome.split(' ')[0]}!`;
+        const nomeInput = document.getElementById('nome-prof');
+        if (nomeInput && !nomeInput.value) nomeInput.value = nome;
+        nextStep(3);
+    }
+}
+
+// ===== CONCLUIR CADASTRO DO PROFESSOR =====
 function finalizarCadastro() {
-    const nome = document.getElementById('aluno-nome')?.value.trim();
-    if (!nome) return alert("Digite o nome do aluno");
+    const nomeInput = document.getElementById('nome-prof')?.value.trim();
+    const areaInput = document.getElementById('area-ensino')?.value.trim();
+    const tipoEscolaInput = document.getElementById('tipo-escola')?.value.trim();
+    const nomeEscolaInput = document.getElementById('nome-escola')?.value.trim();
 
-    const areaInput = document.getElementById('area-ensino');
-    if (areaInput?.value) localStorage.setItem('professorArea', areaInput.value);
+    if (!areaInput) {
+        alert("Por favor, informe a sua área de ensino.");
+        return;
+    }
 
-    alunoAtivo = {
-        nome,
-        serie: document.getElementById('aluno-serie')?.value || 'Não informada',
-        neuro: document.getElementById('aluno-neuro')?.value || 'Nenhuma'
-    };
+    if (nomeInput) localStorage.setItem('professorNome', nomeInput);
+    localStorage.setItem('professorArea', areaInput);
+    localStorage.setItem('professorTipoEscola', tipoEscolaInput);
+    localStorage.setItem('professorEscola', nomeEscolaInput);
 
     document.getElementById('main-container').style.display = 'none';
     document.getElementById('dashboard-professor').style.display = 'flex';
-    document.getElementById('chat-with-name').innerText = `Aluno: ${nome}`;
 
-    const tag = document.getElementById('chat-aluno-tag');
-    if (tag && alunoAtivo.neuro !== 'Nenhuma') {
-        tag.innerText = alunoAtivo.neuro;
-        tag.style.display = 'inline-block';
+    inicializarHistoricoChatsProf();
+}
+
+// ===== LOGICA MULTI-CHAT (IGUAL DO ALUNO) =====
+
+function inicializarHistoricoChatsProf() {
+    if (listaConversasProf.length === 0) {
+        criarNovaConversaProf();
+    } else {
+        if (!chatIdAtivoProf || !listaConversasProf.find(c => c.id === chatIdAtivoProf)) {
+            chatIdAtivoProf = listaConversasProf[0].id;
+            localStorage.setItem('chatIdAtivo_prof', chatIdAtivoProf);
+        }
+        renderizarListaLateralProf();
+        carregarMensagensChatAtivoProf();
+    }
+}
+
+function criarNovaConversaProf() {
+    const novoId = 'chat_prof_' + Date.now();
+    const novaConversa = {
+        id: novoId,
+        titulo: "Atendimento Pedagógico",
+        messages: []
+    };
+
+    listaConversasProf.unshift(novaConversa);
+    chatIdAtivoProf = novoId;
+
+    localStorage.setItem('listaConversas_prof', JSON.stringify(listaConversasProf));
+    localStorage.setItem('chatIdAtivo_prof', chatIdAtivoProf);
+
+    renderizarListaLateralProf();
+    carregarMensagensChatAtivoProf();
+}
+
+function alternarParaChatProf(id) {
+    chatIdAtivoProf = id;
+    localStorage.setItem('chatIdAtivo_prof', chatIdAtivoProf);
+    renderizarListaLateralProf();
+    carregarMensagensChatAtivoProf();
+}
+
+function renderizarListaLateralProf() {
+    const listContainer = document.getElementById('history-list-prof');
+    if (!listContainer) return;
+
+    listContainer.innerHTML = '';
+
+    listaConversasProf.forEach(chat => {
+        const item = document.createElement('div');
+        item.className = `history-item ${chat.id === chatIdAtivoProf ? 'active' : ''}`;
+        item.onclick = () => alternarParaChatProf(chat.id);
+
+        item.innerHTML = `
+            <span class="history-item-icon">📋</span>
+            <span class="sidebar-text">${chat.titulo}</span>
+        `;
+        listContainer.appendChild(item);
+    });
+}
+
+function carregarMensagensChatAtivoProf() {
+    const chatWindow = document.getElementById('chat-window-prof');
+    if (!chatWindow) return;
+
+    chatWindow.innerHTML = '';
+    const chatAtual = listaConversasProf.find(c => c.id === chatIdAtivoProf);
+
+    if (!chatAtual || chatAtual.messages.length === 0) {
+        chatWindow.innerHTML = `
+            <div class="empty-state" id="empty-state-prof">
+                <div class="empty-icon">💡</div>
+                <p>Olá, Professor(a)! Estou pronto para ajudar no seu planejamento.<br>Informe o caso do seu aluno para gerarmos estratégias adaptadas.</p>
+            </div>
+        `;
+        return;
     }
 
-    chatHistory = [];
-    localStorage.removeItem('chatHistory_prof');
+    chatAtual.messages.forEach(msg => {
+        appendMsgProf(msg.role === 'model' ? 'bot' : 'user', msg.content);
+    });
+}
 
-    const nomeProf = localStorage.getItem('professorNome') || '';
-    appendMsg('bot', `Olá, Prof. ${nomeProf.split(' ')[0]}! Sou seu assistente pedagógico. Como posso ajudar com o plano de aula para ${nome}?`);
-}
-function pularAluno() {
-    alunoAtivo = { nome: "Aluno", serie: "", neuro: "" };
-    document.getElementById("main-container").style.display = "none";
-    document.getElementById("dashboard-professor").style.display = "flex";
-    document.getElementById("chat-with-name").innerText = "Chat Pedagógico";
-    chatHistory = [];
-    localStorage.removeItem("chatHistory_prof");
-    const nomeProf = localStorage.getItem("professorNome") || "";
-    appendMsg("bot", `Olá, Prof. ${nomeProf.split(" ")[0]}! Você pode adicionar um aluno a qualquer momento clicando em "+ Novo Aluno" na barra lateral. Como posso ajudar?`);
-}
-// ===== ENVIAR MENSAGEM =====
-async function sendMessage() {
-    const input = document.getElementById('user-input');
-    const chat = document.getElementById('chat-window');
-    const msg = input?.value?.trim();
-    if (!msg || !chat) return;
+// ===== ENVIAR MENSAGEM NO CHAT =====
+async function sendMessageProf() {
+    const input = document.getElementById('user-input-prof');
+    const chatWindow = document.getElementById('chat-window-prof');
+    const msgText = input?.value?.trim();
+    if (!msgText || !chatWindow) return;
 
     input.value = '';
-    appendMsg('user', msg);
+
+    const emptyState = document.getElementById('empty-state-prof');
+    if (emptyState) emptyState.remove();
+
+    appendMsgProf('user', msgText);
+
+    // Grava no estado local da conversa ativa
+    const chatAtual = listaConversasProf.find(c => c.id === chatIdAtivoProf);
+    if (chatAtual) {
+        chatAtual.messages.push({ role: "user", content: msgText });
+        if (chatAtual.titulo === "Atendimento Pedagógico") {
+            chatAtual.titulo = msgText.length > 22 ? msgText.substring(0, 20) + "..." : msgText;
+            renderizarListaLateralProf();
+        }
+        localStorage.setItem('listaConversas_prof', JSON.stringify(listaConversasProf));
+    }
 
     const typingId = 'typing_' + Date.now();
-    chat.innerHTML += `<div id="${typingId}" class="typing-indicator"><span></span><span></span><span></span></div>`;
-    chat.scrollTop = chat.scrollHeight;
+    chatWindow.innerHTML += `<div id="${typingId}" class="typing-indicator"><span></span><span></span><span></span></div>`;
+    chatWindow.scrollTop = chatWindow.scrollHeight;
 
     try {
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
-        const systemPrompt = buildSystemPromptProfessor();
+        const area = localStorage.getItem('professorArea') || 'geral';
+        const school = localStorage.getItem('professorEscola') || 'não informada';
 
-        const messages = [
-            { role: "user", parts: [{ text: systemPrompt + "\n\nResponda a próxima mensagem como assistente pedagógico." }] },
-            { role: "model", parts: [{ text: "Entendido! Estou pronto para ajudar. Pode perguntar!" }] },
-            ...chatHistory,
-            { role: "user", parts: [{ text: msg }] }
-        ];
+        const systemPrompt = `Você é um assistente pedagógico de IA especialista em inclusão e neurodiversidade. Você está auxiliando um professor da área de ${area} da escola ${school}.
 
-        const chatSession = model.startChat({ history: messages.slice(0, -1) });
-        const result = await chatSession.sendMessage(msg);
-        const resposta = result.response.text();
+DIRETRIZES DE ATUAÇÃO:
+1. Ofereça sugestões práticas de adaptações curriculares, planos de aula focados e avaliações flexibilizadas baseadas no caso trazido.
+2. Sempre use uma abordagem acolhedora e baseada em evidências científicas na educação inclusiva (como Desenho Universal para a Aprendizagem - DUA, TEACCH, ABA, etc.).
+3. Formate suas respostas de forma limpa, objetiva e estruturada em tópicos legíveis para otimizar o tempo do professor.`;
 
-        chatHistory.push({ role: "user", parts: [{ text: msg }] });
-        chatHistory.push({ role: "model", parts: [{ text: resposta }] });
+        const mappedHistory = chatAtual.messages.slice(0, -1).map(item => ({
+            role: item.role === 'model' ? 'assistant' : 'user',
+            content: item.content
+        }));
 
-        if (chatHistory.length > 40) chatHistory = chatHistory.slice(-40);
-        localStorage.setItem('chatHistory_prof', JSON.stringify(chatHistory));
+        const response = await fetch(BACKEND_FUNCTION_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                model: "llama-3.1-8b-instant",
+                messages: [
+                    { role: "system", content: systemPrompt },
+                    ...mappedHistory,
+                    { role: "user", content: msgText }
+                ]
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Erro na requisição: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const resposta = data.text;
 
         document.getElementById(typingId)?.remove();
-        appendMsg('bot', resposta);
+        appendMsgProf('bot', resposta);
+
+        if (chatAtual) {
+            chatAtual.messages.push({ role: "model", content: resposta });
+            localStorage.setItem('listaConversas_prof', JSON.stringify(listaConversasProf));
+        }
 
     } catch (e) {
         document.getElementById(typingId)?.remove();
-        appendMsg('bot', '⚠️ Erro de conexão. Tente novamente em instantes.');
+        appendMsgProf('bot', '⚠️ Erro ao processar resposta com o servidor pedagógico. Tente novamente.');
         console.error(e);
     }
 }
-// ===== PROMPT DO PROFESSOR =====
-function buildSystemPromptProfessor() {
-    const area = localStorage.getItem('professorArea') || 'geral';
-    const a = alunoAtivo || {};
-    return `Você é um assistente pedagógico especialista para o professor de ${area}.
 
-PERFIL DO ALUNO:
-- Nome: ${a.nome || 'não informado'}
-- Série: ${a.serie || 'não informada'}
-- Condição/Neurodivergência: ${a.neuro || 'não informada'}
-
-DIRETRIZES:
-1. Sugira estratégias de ensino inclusivas e adaptadas ao perfil do aluno
-2. Ofereça planos de aula, atividades e materiais práticos
-3. Use linguagem profissional mas acessível
-4. Quando relevante, cite metodologias como ABA, TEACCH ou outras evidenciadas
-5. Seja objetivo e direto nas sugestões`;
-}
-
-// ===== UTILITÁRIOS =====
-function appendMsg(role, text) {
-    const chat = document.getElementById('chat-window');
+function appendMsgProf(role, text) {
+    const chat = document.getElementById('chat-window-prof');
     if (!chat) return;
     const div = document.createElement('div');
     div.className = `msg ${role}`;
@@ -210,33 +287,13 @@ function appendMsg(role, text) {
     chat.scrollTop = chat.scrollHeight;
 }
 
-// ===== EXPOSIÇÃO GLOBAL =====
-window.nextStep = nextStep;
-window.verificarPerfilAposLogin = verificarPerfilAposLogin;
-window.finalizarCadastro = finalizarCadastro;
-window.pularAluno = pularAluno;
-window.sendMessage = sendMessage;
-
-// ===== ENTER NO INPUT + INIT =====
-document.addEventListener('DOMContentLoaded', () => {
-    const input = document.getElementById('user-input');
-    if (input) input.addEventListener('keypress', e => {
-        if (e.key === 'Enter') sendMessage();
-    });
-
-    // Garante step-1 visível se não há sessão salva
-    if (!savedNomeProf) {
-        const s1 = document.getElementById('step-1');
-        if (s1) s1.style.display = 'flex';
-    }
-});
-// ===== VOZ - PROFESSOR =====
+// ===== FUNCIONALIDADE DE VOZ =====
 let recognitionProf = null;
 let isRecordingProf = false;
 
 window.toggleVoiceProf = function() {
     const btn = document.getElementById('btn-voice-prof');
-    const input = document.getElementById('user-input');
+    const input = document.getElementById('user-input-prof');
 
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
         alert('Seu navegador não suporta reconhecimento de voz. Tente o Chrome.');
@@ -279,3 +336,24 @@ window.toggleVoiceProf = function() {
 
     recognitionProf.start();
 };
+
+// Exportando funções para o escopo global (cliques inline do HTML)
+window.nextStep = nextStep;
+window.verificarPerfilAposLogin = verificarPerfilAposLogin;
+window.finalizarCadastro = finalizarCadastro;
+window.sendMessageProf = sendMessageProf;
+window.criarNovaConversaProf = criarNovaConversaProf;
+
+// Evento de inicialização do teclado
+document.addEventListener('DOMContentLoaded', () => {
+    const input = document.getElementById('user-input-prof');
+    if (input) input.addEventListener('keypress', e => {
+        if (e.key === 'Enter') sendMessageProf();
+    });
+
+    if (!savedNomeProf) {
+        const s1 = document.getElementById('step-1');
+        if (s1) s1.style.display = 'flex';
+    }
+});
+

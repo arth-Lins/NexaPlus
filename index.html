@@ -94,46 +94,83 @@
                 radial-gradient(ellipse at 20% 70%, rgba(205,150,153,0.07) 0%, transparent 40%),
                 var(--bg);
         }
-        
-          /* Logo Central (Infinito) */
-        .hero-logo-main {
-            display: block;
-            width: 100%;
-            max-width: 450px;
-            height: auto;
-            filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.15));
-            animation: floatAnim 4s ease-in-out infinite;
+
+        /*Decorative orbs*/
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            filter: blur(60px);
+        }
+        .orb-1 { width:400px; height:400px; top:-100px; left:-80px; background: rgba(183,221,200,0.07); animation: drift1 12s ease-in-out infinite; }
+        .orb-2 { width:300px; height:300px; bottom:0; right:-60px; background: rgba(187,171,215,0.07); animation: drift2 15s ease-in-out infinite; }
+        .orb-3 { width:200px; height:200px; top:40%; left:20%; background: rgba(243,223,154,0.04); animation: drift1 18s ease-in-out infinite reverse; }
+
+        @keyframes drift1 {
+            0%,100% { transform: translate(0,0); }
+            50%      { transform: translate(30px, 20px); }
+        }
+        @keyframes drift2 {
+            0%,100% { transform: translate(0,0); }
+            50%      { transform: translate(-25px, -30px); }
         }
 
-        @keyframes floatAnim {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 760px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 28px;
+            animation: heroIn 0.9s cubic-bezier(0.22,1,0.36,1) both;
         }
 
-        @keyframes heroFadeIn {
-            from { opacity: 0; transform: translateY(30px); }
+        @keyframes heroIn {
+            from { opacity: 0; transform: translateY(36px); }
             to   { opacity: 1; transform: translateY(0); }
         }
+
         .badge {
             display: inline-flex;
-            padding: 8px 20px;
-            background: rgba(243, 223, 154, 0.15);
-            border: 1px solid var(--accent-green);
+            align-items: center;
+            gap: 8px;
+            padding: 8px 22px;
+            background: rgba(183,221,200,0.08);
+            border: 1px solid rgba(183,221,200,0.22);
             border-radius: 50px;
             font-family: 'Sora', sans-serif;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             font-weight: 700;
-            color: var(--accent-green);
+            color: var(--mint);
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.12em;
         }
-           .subtitle {
-            font-size: 1.2rem;
-            color: var(--white);
-            opacity: 0.85;
-            line-height: 1.6;
-            max-width: 600px;
+        .badge::before { content: '✦'; }
+
+        .hero-logo-main {
+            width: 100%;
+            max-width: 380px;
+            height: auto;
+            filter: drop-shadow(0 0 40px rgba(183,221,200,0.18)) drop-shadow(0 20px 60px rgba(0,0,0,0.5));
+            animation: float 5s ease-in-out infinite;
         }
+        @keyframes float {
+            0%,100% { transform: translateY(0); }
+            50%      { transform: translateY(-14px); }
+        }
+
+        .hero-tagline {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 300;
+            color: var(--muted);
+            line-height: 1.65;
+            max-width: 540px;
+            letter-spacing: -0.01em;
+        }
+        .hero-tagline strong { color: var(--white); font-weight: 600; }
+        
             /* ===== BOTÕES ===== */
         .cta-buttons {
             display: flex;

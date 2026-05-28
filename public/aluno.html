@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexaPlus — Área do Aluno</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+    <style>
+        /* ===== NEXAPLUS — DESIGN SYSTEM ===== */
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+        :root {
+            --bg:        #0d0d10;
+            --surface:   #141418;
+            --surface2:  #1c1c22;
+            --surface3:  #242430;
+            --border:    rgba(255,255,255,0.07);
+            --border2:   rgba(255,255,255,0.12);
+            --cream:     #f3df9a;
+            --mint:      #b6dcc7;
+            --rose:      #cd9699;
+            --lavender:  #bbabd7;
+            --white:     #ffffff;
+            --text:      #e2e0ea;
+            --muted:     rgba(255,255,255,0.45);
+            --subtle:    rgba(255,255,255,0.22);
+            --radius:    16px;
+            --radius-lg: 24px;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 3px; }
+
+        .onboarding-wrap {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            background: radial-gradient(ellipse at 20% 50%, rgba(187,171,215,0.06) 0%, transparent 50%), var(--bg);
+        }
+
+        .onboarding-card {
+            display: flex;
+            width: 100%;
+            max-width: 980px;
+            min-height: 620px;
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: 0 40px 120px rgba(0,0,0,0.7);
+        }
+
+        .form-side {
+            flex: 1;
+            padding: 52px 56px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            overflow-y: auto;
+        }
+
+        .back-link {
+            color: var(--muted);
+            font-size: 0.82rem;
+            text-decoration: none;
+            margin-bottom: 4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 32px;
+        }
+        .mini-logo { width: 34px; height: 34px; object-fit: contain; }
+        .brand-name {
+            font-family: 'Sora', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--white);
+        }
+
+        .step { display: none; flex-direction: column; gap: 16px; }
+        .step.active { display: flex; }
+
+        .step-tag {
+            display: inline-flex;
+            padding: 5px 16px;
+            background: rgba(187,171,215,0.1);
+            color: var(--lavender);
+            border: 1px solid rgba(187,171,215,0.2);
+            border-radius: 50px;
+            font-family: 'Sora', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 700;
+            width: fit-content;
+        }
+
+        .step h2 {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.65rem;
+            color: var(--white);
+        }
+
+        .step-desc { font-size: 0.92rem; color: var(--muted); line-height: 1.65; }
+
+        .input-label { font-size: 0.8rem; color: var(--subtle); text-transform: uppercase; margin-bottom: -6px; margin-top: 4px;}
+        
+        .input-field, .select-field {
+            width: 100%; padding: 13px 18px; background: var(--surface2);
+            border: 1px solid var(--border2); border-radius: 12px; color: var(--text); outline: none;
+            font-family: 'DM Sans', sans-serif; font-size: 0.95rem; transition: all 0.2s;
+        }
+        
+        .select-field {
+            cursor: pointer; appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23e2e0ea' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 18px center;
+        }
+        .select-field option { background: var(--surface2); color: var(--text); }
+
+        /* ===== BOTÕES DE SELEÇÃO DE ESCOLA ===== */
+        .toggle-container { display: flex; gap: 12px; margin-bottom: 2px; }
+        
+        .btn-toggle {
+            flex: 1; padding: 13px 18px; background: var(--surface2); border: 1px solid var(--border2);
+            border-radius: 12px; color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+            font-weight: 500; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-toggle:hover { border-color: rgba(255, 255, 255, 0.2); color: var(--white); }
+        .btn-toggle.selected {
+            background: rgba(187, 171, 215, 0.1); border-color: var(--lavender); color: var(--lavender); font-weight: 600;
+        }
+        .btn-toggle .radio-circle { width: 16px; height: 16px; border: 2px solid var(--subtle); border-radius: 50%; position: relative; }
+        .btn-toggle.selected .radio-circle { border-color: var(--lavender); }
+        .btn-toggle.selected .radio-circle::after {
+            content: ''; width: 8px; height: 8px; background: var(--lavender); border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        }
+
+        .btn-primary {
+            padding: 14px 30px; background: var(--lavender); color: #120d1a;
+            border: none; border-radius: 12px; font-family: 'Sora', sans-serif; font-weight: 700; cursor: pointer; width: fit-content;
+            transition: all 0.2s;
+        }
+        .btn-primary:disabled {
+            background: var(--surface3); color: rgba(255, 255, 255, 0.2); border: 1px solid var(--border); cursor: not-allowed;
+        }
+
+        .btn-google {
+            display: flex; align-items: center; gap: 12px; padding: 14px 24px;
+            background: var(--surface2); color: var(--text); border: 1px solid var(--border2); border-radius: 12px; cursor: pointer; width: fit-content;
+        }
+
+        .image-side {
+            width: 380px; flex-shrink: 0; background: linear-gradient(145deg, #17141f 0%, #121418 100%);
+            display: flex; align-items: center; justify-content: center; padding: 40px; border-left: 1px solid var(--border);
+        }
+        .image-side img { width: 100%; max-width: 300px; object-fit: contain; }
+
+        /* ===== DASHBOARD ===== */
+        .dashboard { display: flex; width: 100vw; height: 100vh; position: fixed; inset: 0; z-index: 1000; background: var(--bg); }
+
+        .sidebar {
+            width: 68px; background: var(--surface); border-right: 1px solid var(--border);
+            display: flex; flex-direction: column; padding: 20px 12px; gap: 8px; transition: width 0.3s cubic-bezier(0.4,0,0.2,1); overflow: hidden; flex-shrink: 0;
+        }
+        .sidebar:hover { width: 264px; }
+
+        .sidebar-top { display: flex; flex-direction: column; gap: 8px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+        .sidebar-text { opacity: 0; transition: opacity 0.2s; white-space: nowrap; pointer-events: none; }
+        .sidebar:hover .sidebar-text { opacity: 1; pointer-events: auto; }
+
+        .btn-new-chat {
+            display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+            background: rgba(187,171,215,0.08); color: var(--lavender); border: 1px solid rgba(187,171,215,0.18);
+            border-radius: 10px; font-family: 'Sora', sans-serif; font-size: 0.85rem; font-weight: 600; cursor: pointer; width: 100%;
+        }
+
+        .history-list { display: flex; flex-direction: column; gap: 4px; overflow-y: auto; flex: 1; margin-top: 8px; }
+        
+        .history-item {
+            display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+            border-radius: 10px; cursor: pointer; transition: background 0.2s, color 0.2s;
+            color: var(--muted); text-decoration: none; font-size: 0.88rem;
+        }
+        .history-item:hover, .history-item.active { background: var(--surface2); color: var(--white); }
+        .history-item-icon { flex-shrink: 0; }
+
+        .chat-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); }
+        .chat-header { padding: 18px 40px; border-bottom: 1px solid var(--border); background: rgba(20,20,24,0.9); backdrop-filter: blur(12px); }
+        .chat-header strong { font-family: 'Sora', sans-serif; font-size: 0.97rem; color: var(--white); }
+
+        .chat-messages { flex: 1; padding: 40px 18%; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
+
+        .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; height: 100%; opacity: 0.4; text-align: center;}
+        .empty-icon { font-size: 2.5rem; }
+
+        .msg { max-width: 75%; padding: 14px 20px; font-size: 0.95rem; line-height: 1.6; }
+        .msg.user { align-self: flex-end; background: var(--surface2); color: var(--text); border-radius: 18px 18px 4px 18px; border: 1px solid var(--border2); }
+        .msg.bot { align-self: flex-start; background: transparent; color: var(--text); border-radius: 0; max-width: 100%; padding: 0; white-space: pre-wrap; }
+
+        .typing-indicator { display: flex; gap: 5px; align-items: center; padding: 10px 0; }
+        .typing-indicator span { width: 7px; height: 7px; background: var(--lavender); border-radius: 50%; animation: bounce 1.2s infinite; opacity: 0.6; }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes bounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
+
+        .chat-input-container { padding: 20px 18% 28px; }
+        .input-wrapper { display: flex; align-items: flex-end; background: var(--surface); border: 1px solid var(--border2); border-radius: 18px; padding: 12px 14px 12px 22px; gap: 10px; }
+        #user-input-aluno { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-size: 0.93rem; resize: none; min-height: 24px; }
+        
+        .btn-voice, .btn-send { width: 36px; height: 36px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .btn-voice { background: transparent; border: 1px solid var(--border2); color: var(--subtle); }
+        .btn-voice.recording { background: rgba(220,60,60,0.12); border-color: rgba(220,60,60,0.4); color: #e06060; }
+        .btn-send { background: var(--lavender); border: none; }
+        .btn-send svg path { fill: #120d1a; }
+
+        @media (max-width: 768px) {
+            .onboarding-card { flex-direction: column; }
+            .image-side { display: none; }
+            .form-side { padding: 36px 28px; }
+            .chat-messages { padding: 24px 5%; }
+            .chat-input-container { padding: 14px 5% 22px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div vw class="enabled" style="position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:9999;">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
+
+    <script>(function(_d,_s){var _js,_id='userway-tebi',_b=_d.getElementsByTagName(_s)[0];if(_d.getElementById(_id))return;G_JS=_d.createElement(_s);G_JS.id=_id;G_JS.async=true;G_JS.src='https://cdn.userway.org/widget.js?account=FREE-ACCOUNT-ID';_b.parentNode.insertBefore(G_JS,_b);})(document,'script');</script>
+
+    <div class="onboarding-wrap" id="main-container">
+        <div class="onboarding-card">
+            <div class="form-side">
+                <a href="index.html" class="back-link">← Início</a>
+                <div class="brand">
+                    <img src="infinity.png" alt="Logo" class="mini-logo" onerror="this.style.display='none'">
+                    <span class="brand-name">NexaPlus</span>
+                </div>
+
+                <div id="step-1" class="step active">
+                    <div class="step-tag">Aluno</div>
+                    <h2>Seu companheiro de estudos com IA!</h2>
+                    <p class="step-desc">Um espaço adaptado para você tirar dúvidas, praticar matérias e aprender no seu próprio ritmo.</p>
+                    <button class="btn-primary" onclick="nextStep(2)">Começar jornada →</button>
+                </div>
+
+                <div id="step-2" class="step">
+                    <div class="step-tag">Acesso</div>
+                    <h2>Entre com sua conta</h2>
+                    <p class="step-desc">Conecte sua conta Google de forma simples e segura para salvar o seu progresso.</p>
+                    <button class="btn-google" onclick="verificarPerfilAposLogin()">
+                        <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                        Entrar com Google
+                    </button>
+                </div>
+
+                <div id="step-3" class="step">
+                    <div class="step-tag">Perfil</div>
+                    <h2 id="welcome-text">Bem-vindo(a)!</h2>
+                    <p class="step-desc">Todos os campos abaixo são obrigatórios para liberar o seu painel de estudos:</p>
+                    
+                    <label class="input-label">Qual o seu nome completo?</label>
+                    <input type="text" id="nome-aluno" placeholder="Ex: Lucas Silva" class="input-field">
+                    
+                    <label class="input-label">Em qual série você está?</label>
+                    <select id="serie-aluno" class="select-field">
+                        <option value="" disabled selected>Selecione seu ano escolar...</option>
+                        <option value="1º Ano">1º Ano</option>
+                        <option value="2º Ano">2º Ano</option>
+                        <option value="3º Ano">3º Ano</option>
+                    </select>
+
+                    <label class="input-label">Sua escola é pública?</label>
+                    <div class="toggle-container">
+                        <button type="button" class="btn-toggle" id="btn-escola-sim" onclick="selecionarTipoEscolaAluno('Sim')">
+                            <span class="radio-circle"></span> Sim
+                        </button>
+                        <button type="button" class="btn-toggle" id="btn-escola-nao" onclick="selecionarTipoEscolaAluno('Não')">
+                            <span class="radio-circle"></span> Não
+                        </button>
+                    </div>
+
+                    <label class="input-label">Qual o nome da sua escola?</label>
+                    <input type="text" id="escola-aluno" placeholder="Ex: Unidade Escolar Dirceu Mendes" class="input-field">
+                    
+                    <label class="input-label">Seu transtorno ou neurodivergência</label>
+                    <input type="text" id="neuro-aluno" placeholder="Ex: TDAH, Autismo, Dislexia ou Nenhuma" class="input-field">
+                    
+                    <button class="btn-primary" id="btn-concluir-aluno" onclick="finalizarCadastroAluno()" disabled>Concluir e Estudar →</button>
+                </div>
+            </div>
+            <div class="image-side">
+                <img src="icon.png" alt="Ilustração">
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboard-aluno" class="dashboard" style="display:none;">
+        <aside class="sidebar">
+            <div class="sidebar-top">
+                <button class="btn-new-chat" onclick="criarNovaConversa()">
+                    <span style="font-size:1.1rem; font-weight:bold;">+</span>
+                    <span class="sidebar-text">Nova Conversa</span>
+                </button>
+            </div>
+            <div class="history-list" id="history-list-aluno"></div>
+                <div style="padding: 12px 0 0; flex-shrink:0;">
+                <a href="aprender.html" style="display:flex; align-items:center; gap:10px; padding:11px 12px; background:#000000; border:1px solid #3b3b3b; border-radius:10px; text-decoration:none;">
+                    <span>📒</span>
+                    <span class="sidebar-text" style="font-family:'Sora',sans-serif; font-size:0.82rem; font-weight:600; color:#ffffff;">Minha Forma de aprender</span>  
+                </a>
+            </div>
+            
+            <div style="margin-top:auto; padding-top:12px; border-top:1px solid rgba(255, 255, 255, 0.1);">
+                <a href="index.html" style="display:flex; align-items:center; gap:10px; padding:10px 12px; color:rgba(255,255,255,0.4); text-decoration:none; font-size:0.85rem;">
+                    <span>↩</span>
+                    <span class="sidebar-text">Sair da Área</span>
+                </a>
+            </div>    
+        </aside>
+
+        <main class="chat-area">
+            <header class="chat-header">
+                <strong>Assistente de Estudos NexaPlus</strong>
+            </header>
+            <div class="chat-messages" id="chat-window-aluno"></div>
+            <div class="chat-input-container">
+                <div class="input-wrapper">
+                    <input type="text" id="user-input-aluno" placeholder="Pergunte qualquer coisa sobre os seus estudos...">
+                    <div class="input-actions">
+                        <button class="btn-voice" id="btn-voice-aluno" title="Pesquisar por voz" onclick="toggleVoiceAluno()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2H3v2a9 9 0 0 0 8 8.94V23h2v-2.06A9 9 0 0 0 21 12v-2h-2z"/></svg>
+                        </button>
+                        <button class="btn-send" onclick="sendMessageAluno()">
+                            <svg width="16" height="16" viewBox="0 0 24 24"><path fill="white" d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="aluno.js"></script>
+</body>
+</html>

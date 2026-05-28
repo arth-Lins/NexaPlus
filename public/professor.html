@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexaPlus — Área do Professor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ===== NEXAPLUS — DESIGN SYSTEM ===== */
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+        :root {
+            /* Cores base */
+            --bg:        #0d0d10;
+            --surface:   #141418;
+            --surface2:  #1c1c22;
+            --surface3:  #242430;
+            --border:    rgba(255,255,255,0.07);
+            --border2:   rgba(255,255,255,0.12);
+
+            /* Paleta pastel */
+            --cream:     #f3df9a;
+            --mint:      #b6dcc7;
+            --rose:      #cd9699;
+            --lavender:  #bbabd7;
+
+            /* Textos */
+            --white:     #ffffff;
+            --text:      #e2e0ea;
+            --muted:     rgba(255,255,255,0.45);
+            --subtle:    rgba(255,255,255,0.22);
+
+            /* Semântica */
+            --green:     var(--mint);
+            --pink:      var(--rose);
+            --yellow:    var(--cream);
+            --purple:    var(--lavender);
+            --black:     #0d0d10;
+
+            --radius:    16px;
+            --radius-lg: 24px;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 3px; }
+
+        /* ===== ONBOARDING WRAPPER ===== */
+        .onboarding-wrap {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(183,221,200,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(187,171,215,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 60% 80%, rgba(205,150,153,0.06) 0%, transparent 45%),
+                var(--bg);
+        }
+
+        .onboarding-card {
+            display: flex;
+            width: 100%;
+            max-width: 980px;
+            min-height: 620px;
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: 0 40px 120px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04);
+            animation: cardIn 0.55s cubic-bezier(0.22,1,0.36,1) both;
+        }
+
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(28px) scale(0.97); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* ===== FORM SIDE ===== */
+        .form-side {
+            flex: 1;
+            padding: 52px 56px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            overflow-y: auto;
+        }
+
+        .back-link {
+            color: var(--muted);
+            font-size: 0.82rem;
+            text-decoration: none;
+            transition: color 0.2s;
+            margin-bottom: 4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: 0.02em;
+        }
+        .back-link:hover { color: var(--white); }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 32px;
+        }
+        .mini-logo { width: 34px; height: 34px; object-fit: contain; filter: drop-shadow(0 0 8px rgba(183,221,200,0.4)); }
+        .brand-name {
+            font-family: 'Sora', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--white);
+            letter-spacing: -0.02em;
+        }
+
+        /* ===== STEPS ===== */
+        .step { display: none; flex-direction: column; gap: 16px; animation: fadeUp 0.3s ease both; }
+        .step.active { display: flex; }
+
+        @keyframes fadeUp {
+            from { opacity:0; transform: translateY(14px); }
+            to   { opacity:1; transform: translateY(0); }
+        }
+
+        .step-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 16px;
+            background: rgba(183,221,200,0.1);
+            color: var(--mint);
+            border: 1px solid rgba(183,221,200,0.2);
+            border-radius: 50px;
+            font-family: 'Sora', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            width: fit-content;
+        }
+
+        .step h2 {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.65rem;
+            font-weight: 700;
+            color: var(--white);
+            letter-spacing: -0.03em;
+            line-height: 1.2;
+        }
+
+        .step-desc {
+            font-size: 0.92rem;
+            color: var(--muted);
+            line-height: 1.65;
+        }
+
+        /* ===== INPUTS ===== */
+        .input-label {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--subtle);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            margin-bottom: -6px;
+            margin-top: 6px;
+        }
+
+        .input-field, .select-field {
+            width: 100%;
+            padding: 13px 18px;
+            background: var(--surface2);
+            border: 1px solid var(--border2);
+            border-radius: 12px;
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            margin-bottom: 2px;
+        }
+        .select-field {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23e2e0ea' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 18px center;
+        }
+        .select-field option {
+            background: var(--surface2);
+            color: var(--text);
+        }
+        .input-field::placeholder { color: rgba(255,255,255,0.18); }
+        .input-field:focus, .select-field:focus {
+            border-color: rgba(183,221,200,0.4);
+            box-shadow: 0 0 0 3px rgba(183,221,200,0.08);
+        }
+
+        /* ===== DESIGN DE SELEÇÃO PÚBLICA/PARTICULAR ===== */
+        .toggle-container {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 2px;
+        }
+
+        .btn-toggle {
+            flex: 1;
+            padding: 13px 18px;
+            background: var(--surface2);
+            border: 1px solid var(--border2);
+            border-radius: 12px;
+            color: var(--muted);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-toggle:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            color: var(--white);
+        }
+
+        .btn-toggle.selected {
+            background: rgba(183, 221, 200, 0.1);
+            border-color: var(--mint);
+            color: var(--mint);
+            font-weight: 600;
+            box-shadow: 0 0 12px rgba(183, 221, 200, 0.1);
+        }
+
+        .btn-toggle .radio-circle {
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--subtle);
+            border-radius: 50%;
+            display: inline-block;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .btn-toggle.selected .radio-circle {
+            border-color: var(--mint);
+        }
+
+        .btn-toggle.selected .radio-circle::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--mint);
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* ===== BOTÕES ===== */
+        .btn-primary {
+            padding: 14px 30px;
+            background: var(--cream);
+            color: #1a1200;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Sora', sans-serif;
+            font-size: 0.93rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            width: fit-content;
+            margin-top: 4px;
+            letter-spacing: -0.01em;
+        }
+        .btn-primary:hover:not(:disabled) {
+            background: #f7e8b0;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(243,223,154,0.3);
+        }
+
+        .btn-primary:disabled {
+            background: var(--surface3);
+            color: rgba(255, 255, 255, 0.2);
+            border: 1px solid var(--border);
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .btn-google {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 24px;
+            background: var(--surface2);
+            color: var(--text);
+            border: 1px solid var(--border2);
+            border-radius: 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.93rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            width: fit-content;
+        }
+        .btn-google:hover {
+            background: var(--surface3);
+            border-color: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        /* ===== IMAGE SIDE ===== */
+        .image-side {
+            width: 380px;
+            flex-shrink: 0;
+            background: linear-gradient(145deg, #1a1f2e 0%, #121418 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            border-left: 1px solid var(--border);
+        }
+
+        .image-side img {
+            width: 100%;
+            max-width: 300px;
+            object-fit: contain;
+            flex: 1;
+            padding-top: 40px;
+            position: relative;
+            z-index: 1;
+            filter: drop-shadow(0 20px 40px rgba(0,0,0,0.5));
+        }
+
+        /* ===== DASHBOARD ===== */
+        .dashboard {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: var(--bg);
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 68px;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 20px 12px;
+            gap: 8px;
+            transition: width 0.3s cubic-bezier(0.4,0,0.2,1);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .sidebar:hover { width: 264px; }
+
+        .sidebar-top {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-text {
+            opacity: 0;
+            transition: opacity 0.2s;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+        .sidebar:hover .sidebar-text {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .btn-new-student {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: rgba(183,221,200,0.08);
+            color: var(--mint);
+            border: 1px solid rgba(183,221,200,0.18);
+            border-radius: 10px;
+            font-family: 'Sora', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        .btn-new-student:hover {
+            background: rgba(183,221,200,0.15);
+            border-color: rgba(183,221,200,0.3);
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            overflow-y: auto;
+            flex: 1;
+            margin-top: 8px;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.88rem;
+        }
+        .history-item:hover, .history-item.active {
+            background: var(--surface2);
+            color: var(--white);
+        }
+        .history-item-icon { flex-shrink: 0; }
+
+        /* ===== CHAT AREA ===== */
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: var(--bg);
+        }
+
+        .chat-header {
+            padding: 18px 40px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(20,20,24,0.9);
+            backdrop-filter: blur(12px);
+        }
+        .chat-header strong {
+            font-family: 'Sora', sans-serif;
+            font-size: 0.97rem;
+            color: var(--white);
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 40px 18%;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            height: 100%;
+            opacity: 0.4;
+            text-align: center;
+        }
+        .empty-icon { font-size: 2.5rem; }
+
+        .msg {
+            max-width: 75%;
+            padding: 14px 20px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 4px;
+        }
+        .msg.user {
+            align-self: flex-end;
+            background: var(--surface2);
+            color: var(--text);
+            border-radius: 18px 18px 4px 18px;
+            border: 1px solid var(--border2);
+        }
+        .msg.bot {
+            align-self: flex-start;
+            background: transparent;
+            color: var(--text);
+            border-radius: 0;
+            max-width: 100%;
+            padding: 0;
+            white-space: pre-wrap;
+        }
+        .msg.system-card {
+            align-self: center;
+            background: rgba(187, 171, 215, 0.05);
+            border: 1px dashed rgba(187, 171, 215, 0.2);
+            color: var(--lavender);
+            border-radius: 12px;
+            padding: 16px;
+            max-width: 100%;
+            width: 100%;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .chat-input-container { padding: 20px 20% 28px; }
+
+        .input-wrapper {
+            display: flex;
+            align-items: flex-end;
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: 18px;
+            padding: 12px 14px 12px 22px;
+            gap: 10px;
+        }
+
+        #user-input-prof {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text);
+            font-size: 0.93rem;
+        }
+
+        .btn-voice, .btn-send {
+            width: 36px; height: 36px;
+            border-radius: 100px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-voice { background: transparent; border: 1px solid var(--border2); color: var(--subtle); }
+        .btn-send { background: var(--mint); border: none; }
+        .btn-send svg path { fill: #1a1200; }
+
+        /* ===== MODAL FLUTUANTE DE CADASTRO DE ALUNO ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 5, 8, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 520px;
+            padding: 36px;
+            box-shadow: 0 30px 90px rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .modal-header h3 {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .btn-close-modal {
+            background: transparent;
+            border: none;
+            color: var(--muted);
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .btn-close-modal:hover { color: var(--rose); }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .btn-cancel {
+            padding: 13px 24px;
+            background: transparent;
+            border: 1px solid var(--border2);
+            color: var(--text);
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.93rem;
+            transition: all 0.2s;
+        }
+        .btn-cancel:hover { background: var(--surface2); }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes scaleIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        /* ===== MODAL ATIVIDADES DE PESQUISA ===== */
+        #modal-pesquisa .modal-content { max-width: 620px; }
+        .pesquisa-loading { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 32px 0 16px; color: var(--muted); font-size: 0.9rem; }
+        .pesquisa-loading .typing-indicator { display: flex; gap: 6px; align-items: center; }
+        .pesquisa-loading .typing-indicator span { width: 9px; height: 9px; background: var(--mint); border-radius: 50%; animation: bounce 1.2s infinite; opacity: 0.6; }
+        .pesquisa-loading .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .pesquisa-loading .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        .pesquisa-card { background: var(--surface2); border: 1px solid var(--border2); border-radius: 14px; padding: 20px 22px; display: flex; flex-direction: column; gap: 8px; animation: fadeUp 0.4s ease both; }
+        .pesquisa-card:nth-child(2) { animation-delay: 0.1s; }
+        .pesquisa-card:nth-child(3) { animation-delay: 0.2s; }
+        .pesquisa-card-rank { font-family: 'Sora', sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mint); opacity: 0.7; }
+        .pesquisa-card-materia { font-family: 'Sora', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--white); }
+        .pesquisa-card-assunto { font-size: 0.88rem; color: var(--muted); line-height: 1.55; }
+        .pesquisa-escola-label { font-size: 0.78rem; color: var(--subtle); font-style: italic; text-align: center; margin-top: 6px; }
+        .pesquisa-erro { color: var(--rose); font-size: 0.88rem; padding: 12px 0; text-align: center; }
+
+        @media (max-width: 768px) {
+            .onboarding-card { flex-direction: column; }
+            .image-side { display: none; }
+            .form-side { padding: 36px 28px; }
+            .chat-messages { padding: 24px 5%; }
+            .chat-input-container { padding: 14px 5% 22px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div vw class="enabled" style="position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:9999;">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
+
+    <script>(function(_d,_s){var _js,_id='userway-tebi',_b=_d.getElementsByTagName(_s)[0];if(_d.getElementById(_id))return;G_JS=_d.createElement(_s);G_JS.id=_id;G_JS.async=true;G_JS.src='https://cdn.userway.org/widget.js?account=FREE-ACCOUNT-ID';_b.parentNode.insertBefore(G_JS,_b);})(document,'script');</script>
+    
+
+    <div class="onboarding-wrap" id="main-container">
+        <div class="onboarding-card">
+            <div class="form-side">
+                <a href="index.html" class="back-link">← Início</a>
+                <div class="brand">
+                    <img src="infinity.png" alt="Logo" class="mini-logo" onerror="this.style.display='none'">
+                    <span class="brand-name">NexaPlus</span>
+                </div>
+
+                <div id="step-1" class="step active">
+                    <div class="step-tag">Professor</div>
+                    <h2>Bem-vindo ao NexaPlus!</h2>
+                    <p class="step-desc">Uma plataforma com IA para ajudar você a personalizar o ensino para alunos com necessidades específicas.</p>
+                    <button class="btn-primary" onclick="nextStep(2)">Começar →</button>
+                </div>
+
+                <div id="step-2" class="step">
+                    <div class="step-tag">Acesso</div>
+                    <h2>Entre com sua conta</h2>
+                    <p class="step-desc">Use o Google para salvar seu histórico e acessar de qualquer lugar.</p>
+                    <button class="btn-google" onclick="verificarPerfilAposLogin()">
+                        <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                        Entrar com Google
+                    </button>
+                </div>
+
+                <div id="step-3" class="step">
+                    <div class="step-tag">Perfil</div>
+                    <h2 id="welcome-professor-text">Bem-vindo(a), Professor(a)!</h2>
+                    <p class="step-desc">Nos conte um pouco sobre você.</p>
+                    
+                    <label class="input-label">Qual seu nome?</label>
+                    <input type="text" id="nome-prof" placeholder="Ex: João" class="input-field">
+                    
+                    <label class="input-label">Qual sua área de ensino?</label>
+                    <input type="text" id="area-ensino" placeholder="Ex: Matemática, Ciências..." class="input-field">
+                    
+                    <label class="input-label">Sua escola é pública?</label>
+                    <div class="toggle-container">
+                        <button type="button" class="btn-toggle" id="btn-escola-sim" onclick="selecionarTipoEscola('Pública')">
+                            <span class="radio-circle"></span> Sim
+                        </button>
+                        <button type="button" class="btn-toggle" id="btn-escola-nao" onclick="selecionarTipoEscola('Particular')">
+                            <span class="radio-circle"></span> Não
+                        </button>
+                    </div>
+                    
+                    <label class="input-label">Qual o nome da sua escola?</label>
+                    <input type="text" id="nome-escola" placeholder="Ex: CETI Governador Dirceu Mendes Arcoverde" class="input-field">
+                    
+                    <button class="btn-primary" id="btn-finalizar-cadastro" onclick="finalizarCadastro()" disabled>Concluir Cadastro →</button>
+                </div>
+            </div>
+
+            <div class="image-side">
+                <img src="icon.png" alt="Ilustração">
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboard-professor" class="dashboard" style="display:none;">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-top">
+                <button class="btn-new-student" onclick="abrirModalAluno()">
+                    <span class="icon-plus" style="font-size:1.1rem; font-weight:bold;">+</span>
+                    <span class="sidebar-text"> Adicionar Aluno</span>
+                </button>
+            </div>
+            
+            <div class="history-list" id="history-list-prof"></div>
+            
+            <div style="padding: 12px 0 0; flex-shrink:0; display:flex; flex-direction:column; gap:8px;">
+                <button onclick="abrirModalPesquisa()" style="display:flex; align-items:center; gap:10px; padding:11px 12px; background:rgba(182,220,199,0.1); border:1px solid rgba(182,220,199,0.2); border-radius:10px; text-decoration:none; cursor:pointer; width:100%;">
+                    <span>🔬</span>
+                    <span class="sidebar-text" style="font-family:'Sora',sans-serif; font-size:0.82rem; font-weight:600; color:var(--mint);">Atividades de pesquisa</span>  
+                </button>
+                <a href="oficinas.html" style="display:flex; align-items:center; gap:10px; padding:11px 12px; background:rgba(243,223,154,0.1); border:1px solid rgba(243,223,154,0.2); border-radius:10px; text-decoration:none;">
+                    <span></span>
+                    <span class="sidebar-text" style="font-family:'Sora',sans-serif; font-size:0.82rem; font-weight:600; color:var(--cream);">Oficinas para professores</span>  
+                </a>
+            </div>
+            <div style="margin-top:12px; padding-top:12px; border-top:1px solid rgba(255, 255, 255, 0.1);">
+                <a href="index.html" style="display:flex; align-items:center; gap:10px; padding:10px 12px; color:rgba(255,255,255,0.4); text-decoration:none; font-size:0.85rem;">
+                    <span>↩</span>
+                    <span class="sidebar-text">Sair</span>
+                </a>
+            </div>    
+        </aside>
+
+        <main class="chat-area">
+            <header class="chat-header">
+                <strong>Suporte Pedagógico NexaPlus</strong>
+            </header>
+            <div class="chat-messages" id="chat-window-prof"></div>
+            <div class="chat-input-container">
+                <div class="input-wrapper">
+                    <input type="text" id="user-input-prof" placeholder="Pergunte sobre estratégias pedagógicas, adaptações ou planos de aula...">
+                    <div class="input-actions">
+                        <button class="btn-voice" id="btn-voice-prof" title="Pesquisar por voz" onclick="toggleVoiceProf()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2H3v2a9 9 0 0 0 8 8.94V23h2v-2.06A9 9 0 0 0 21 12v-2h-2z"/></svg>
+                        </button>
+                        <button class="btn-send" onclick="sendMessageProf()">
+                            <svg width="16" height="16" viewBox="0 0 24 24"><path fill="white" d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal-overlay" id="modal-aluno">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Cadastrar Novo Aluno</h3>
+                <button class="btn-close-modal" onclick="fecharModalAluno()">&times;</button>
+            </div>
+            
+            <label class="input-label">Nome do Aluno</label>
+            <input type="text" id="modal-nome-aluno" placeholder="Ex: Mariana Silva" class="input-field">
+            
+            <label class="input-label">Série</label>
+            <select id="modal-serie-aluno" class="select-field">
+                <option value="" disabled selected>Selecione a série...</option>
+                <option value="1° ano do ensino médio tempo integral">1° ano</option>
+                <option value="2° ano">2° ano</option>
+                <option value="3° ano">3° ano</option>
+            </select>
+            
+            <label class="input-label">Escola</label>
+            <input type="text" id="modal-escola-aluno" placeholder="Ex: CETI Governador Dirceu" class="input-field">
+            
+            <div style="display: flex; gap: 12px;">
+                <div style="flex: 1;">
+                    <label class="input-label">Idade</label>
+                    <input type="number" id="modal-idade-aluno" placeholder="Ex: 15" class="input-field">
+                </div>
+                <div style="flex: 2;">
+                    <label class="input-label">Atipicidade / Necessidade Especial</label>
+                    <input type="text" id="modal-atipicidade-aluno" placeholder="Ex: Autismo, TDAH, Dislexia..." class="input-field">
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="fecharModalAluno()">Cancelar</button>
+                <button class="btn-primary" style="margin-top:0;" onclick="salvarNovoAluno()">Cadastrar Aluno</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL ATIVIDADES DE PESQUISA ===== -->
+    <div class="modal-overlay" id="modal-pesquisa">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🔬 Atividades de Pesquisa</h3>
+                <button class="btn-close-modal" onclick="fecharModalPesquisa()">&times;</button>
+            </div>
+            <p style="font-size:0.85rem; color:var(--muted); margin-top:-6px;">
+                Os 3 temas mais pesquisados pelos alunos da sua escola, gerados pela IA com base no contexto educacional.
+            </p>
+            <div id="pesquisa-resultado"></div>
+        </div>
+    </div>
+
+    <script type="module" src="professor.js"></script>
+</body>
+</html>

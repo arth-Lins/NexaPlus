@@ -148,5 +148,3 @@ O projeto NexaPlus foi desenvolvido por uma equipe dedicada:
 Este projeto está licenciado sob a licença [MIT](LICENSE). Mais detalhes serão fornecidos no arquivo `LICENSE`.
 
 ---
-
-**Desenvolvido com ❤️ por Manus AI**

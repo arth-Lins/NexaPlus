@@ -212,59 +212,112 @@ window.finalizarCadastro = function() {
 
 // ===== MODAL DE CADASTRO DE ALUNO =====
 window.abrirModalAluno = function() {
-    document.getElementById('modal-aluno').style.display = 'flex';
+    const modal = document.getElementById('modal-aluno');
+    if (modal) modal.style.display = 'flex';
 }
 
 window.fecharModalAluno = function() {
-    document.getElementById('modal-aluno').style.display = 'none';
-    document.getElementById('modal-nome-aluno').value = '';
-    document.getElementById('modal-serie-aluno').value = '';
-    document.getElementById('modal-escola-aluno').value = '';
-    document.getElementById('modal-idade-aluno').value = '';
-    document.getElementById('modal-atipicidade-aluno').value = '';
+    const modal = document.getElementById('modal-aluno');
+    if (modal) modal.style.display = 'none';
+    
+    // Limpa os campos usando encadeamento opcional (?) para evitar erros caso o HTML não tenha o ID exato
+    const nomeInput = document.getElementById('modal-nome-aluno');
+    if (nomeInput) nomeInput.value = '';
+    
+    const serieInput = document.getElementById('modal-serie-aluno');
+    if (serieInput) serieInput.value = ''; // Voltando para .value='' para garantir compatibilidade
+    
+    const escolaInput = document.getElementById('modal-escola-aluno');
+    if (escolaInput) escolaInput.value = '';
+    
+    const idadeInput = document.getElementById('modal-idade-aluno');
+    if (idadeInput) idadeInput.value = '';
+    
+    const atipicidadeInput = document.getElementById('modal-atipicidade-aluno');
+    if (atipicidadeInput) atipicidadeInput.value = '';
 }
 
 window.salvarNovoAluno = async function() {
-    const nome        = document.getElementById('modal-nome-aluno').value.trim();
-    const serie       = document.getElementById('modal-serie-aluno').value;
-    const escola      = document.getElementById('modal-escola-aluno').value.trim();
-    const idade       = document.getElementById('modal-idade-aluno').value.trim();
-    const atipicidade = document.getElementById('modal-atipicidade-aluno').value.trim();
+    try {
+        const nomeInput = document.getElementById('modal-nome-aluno');
+        const serieInput = document.getElementById('modal-serie-aluno');
+        const escolaInput = document.getElementById('modal-escola-aluno');
+        const idadeInput = document.getElementById('modal-idade-aluno');
+        const atipicidadeInput = document.getElementById('modal-atipicidade-aluno');
 
-    if (!nome || !serie || !escola || !idade || !atipicidade) {
-        alert("Por favor, preencha todas as informações do aluno.");
-        return;
+        // Garante que pega os valores, ou string vazia se o input não existir
+        const nome        = nomeInput ? nomeInput.value.trim() : '';
+        const serie       = serieInput ? serieInput.value : '';
+        const escola      = escolaInput ? escolaInput.value.trim() : '';
+        const idade       = idadeInput ? idadeInput.value.trim() : '';
+        const atipicidade = atipicidadeInput ? atipicidadeInput.value.trim() : '';
+
+        if (!nome || !serie || !escola || !idade || !atipicidade) {
+            alert("Por favor, preencha todas as informações do aluno.");
+            return;
+        }
+
+        const novoId = 'aluno_' + Date.now();
+        const fichaAluno = { nome, serie, escola, idade, atipicidade };
+        
+        // Pega lista atual garantindo que seja um array válido
+        let listaAtual = [];
+        try {
+            const storedLista = localStorage.getItem('listaConversas_prof');
+            if (storedLista) listaAtual = JSON.parse(storedLista);
+        } catch(e) {
+            console.error("Erro ao ler lista do localStorage", e);
+        }
+        
+        // Garante que a variável global aponte para a mesma lista
+        listaConversasProf = listaAtual;
+
+        const dadosAlunoFormatados = `📌 Ficha do Aluno Cadastrado:\n• Nome: ${nome}\n• Série: ${serie}\n• Escola: ${escola}\n• Idade: ${idade} anos\n• Atipicidade: ${atipicidade}`;
+
+        const novaConversa = {
+            id: novoId,
+            titulo: nome,
+            messages: [{ role: "system_card", content: dadosAlunoFormatados }]
+        };
+
+        // Atualiza os dados primeiro
+        listaConversasProf.unshift(novaConversa);
+        chatIdAtivoProf = novoId;
+
+        // Salva localmente IMEDIATAMENTE
+        localStorage.setItem('listaConversas_prof', JSON.stringify(listaConversasProf));
+        localStorage.setItem('chatIdAtivo_prof', chatIdAtivoProf);
+
+        // FECHA O MODAL AQUI (Antes de chamar renderizações ou Firebase)
+        window.fecharModalAluno();
+        
+        // ATUALIZA A INTERFACE AQUI
+        if (typeof renderizarListaLateralProf === 'function') {
+            renderizarListaLateralProf();
+        }
+        if (typeof carregarMensagensChatAtivoProf === 'function') {
+            carregarMensagensChatAtivoProf();
+        }
+
+        // Tenta salvar no Firebase DEPOIS de tudo visual estar pronto
+        const uid = localStorage.getItem('professorUID');
+        if (uid) {
+            // Dispara assincronamente sem usar 'await' para NÃO BLOQUEAR a execução caso demore/falhe
+            salvarFichaAlunoFirestore(uid, novoId, fichaAluno)
+                .then(() => {
+                    if (typeof fichasAlunosCache !== 'undefined') {
+                        fichasAlunosCache[novoId] = fichaAluno; 
+                    }
+                })
+                .catch(err => console.error("Erro ao salvar no Firestore (background):", err));
+        }
+
+    } catch (erroGeral) {
+        console.error("Erro fatal ao salvar aluno:", erroGeral);
+        // Em caso de emergência, pelo menos tenta fechar o modal
+        document.getElementById('modal-aluno').style.display = 'none';
+        alert("Ocorreu um erro ao salvar, mas fechamos a janela. Tente recarregar a página.");
     }
-
-    const novoId = 'aluno_' + Date.now();
-
-    // FIX 2 — dados sensíveis vão para o Firestore, NÃO para o localStorage
-    const fichaAluno = { nome, serie, escola, idade, atipicidade };
-    const uid = localStorage.getItem('professorUID');
-    if (uid) {
-        await salvarFichaAlunoFirestore(uid, novoId, fichaAluno);
-        fichasAlunosCache[novoId] = fichaAluno; // atualiza o cache da sessão
-    }
-
-    // No localStorage fica apenas o ID e o título (sem dados sensíveis)
-    const dadosAlunoFormatados = `📌 Ficha do Aluno Cadastrado:\n• Nome: ${nome}\n• Série: ${serie}\n• Escola: ${escola}\n• Idade: ${idade} anos\n• Atipicidade: ${atipicidade}`;
-
-    const novaConversa = {
-        id: novoId,
-        titulo: nome,
-        // infoAluno NÃO é mais armazenado aqui — consulta fichasAlunosCache em runtime
-        messages: [{ role: "system_card", content: dadosAlunoFormatados }]
-    };
-
-    listaConversasProf.unshift(novaConversa);
-    chatIdAtivoProf = novoId;
-
-    localStorage.setItem('listaConversas_prof', JSON.stringify(listaConversasProf));
-    localStorage.setItem('chatIdAtivo_prof', chatIdAtivoProf);
-
-    fecharModalAluno();
-    renderizarListaLateralProf();
-    carregarMensagensChatAtivoProf();
 }
 
 // ===== LÓGICA MULTI-CHAT =====
